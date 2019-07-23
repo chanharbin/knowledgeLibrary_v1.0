@@ -1,17 +1,20 @@
 package com.testFileUpload.pojo;
 
-import java.sql.Date;
+import com.baomidou.mybatisplus.annotations.TableName;
+
+import java.util.Date;
 
 /**
  * 文件信息
  * @author HUANGZHONGGUI3
  */
+@TableName(value = "file")
 public class File {
 
     //编号
     private int id;
     //文件id
-    private int fileId;
+    private String fileId;
     //访问量
     private int visits;
     //文件作者
@@ -21,7 +24,7 @@ public class File {
     //文件名
     private String fileName;
     //文件大小
-    private int fileSize;
+    private Long fileSize;
     //文件路径
     private String filePath;
     //添加文件的时间
@@ -47,11 +50,11 @@ public class File {
         this.id = id;
     }
 
-    public int getFileId() {
+    public String getFileId() {
         return fileId;
     }
 
-    public void setFileId(int fileId) {
+    public void setFileId(String fileId) {
         this.fileId = fileId;
     }
 
@@ -87,11 +90,11 @@ public class File {
         this.fileName = fileName;
     }
 
-    public int getFileSize() {
+    public Long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(int fileSize) {
+    public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 

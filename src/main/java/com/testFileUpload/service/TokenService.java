@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class TokenService {
     public String getToken(User user) {
         String token="";
-        token= JWT.create().withAudience(String.valueOf(user.getUserId()))
+        token= JWT.create().withAudience(String.valueOf(user.getUserId()),user.getUserName())
                 .sign(Algorithm.HMAC256(user.getUserPwd()));
         return token;
     }
