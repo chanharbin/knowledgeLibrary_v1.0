@@ -30,6 +30,6 @@ public class User {
     private Date addTime;
     //用户积分
     private int point;
-
+    //用户权限
     private String role;
 }
