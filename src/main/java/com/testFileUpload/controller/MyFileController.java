@@ -2,12 +2,12 @@ package com.testFileUpload.controller;
 
 import com.auth0.jwt.JWT;
 import com.testFileUpload.service.FileService;
-import com.testFileUpload.util.UserLoginToken;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -16,10 +16,11 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
-@UserLoginToken
-@Controller
+
+@RestController
 public class MyFileController {
     @Autowired
     private FileService fileService;
@@ -27,9 +28,16 @@ public class MyFileController {
     @Autowired
     HttpServletRequest httpServletRequest;
 
-    @UserLoginToken
-    @RequestMapping(value="/uploadFile",produces="application/json;charset=UTF-8")
-    @ResponseBody
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header"),
+            @ApiImplicitParam(name ="keyWord" , value = "检索关键字", required = true,dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name = "description", value = "文档描述", required = false,dataType ="String" ,paramType = "query"),
+            @ApiImplicitParam(name = "fileType", value = "文件类型", required = true,dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name = "fileName", value = "文件", required = true,dataType = "MultipartFile",paramType = "query"),
+    })
+    @ApiOperation(value = "上传文件",httpMethod = "POST",response = ResponseBody.class)
+    @RequestMapping(value="/uploadFile",produces="application/json;charset=UTF-8",method = RequestMethod.POST)
     public String uploadFile(@RequestParam("fileName") MultipartFile file,@RequestParam("description") String description, @RequestParam("keyWord") String keyWord,
                              @RequestParam("fileType")String fileType) {
 
@@ -99,7 +107,6 @@ public class MyFileController {
 
         return "上传成功,文件url=="+url;
     }
-    @UserLoginToken
     @RequestMapping(value="/deleteFile",produces="application/json;charset=UTF-8")
     @ResponseBody
     public String deleteFile(@RequestParam("file_id") String fileId){
@@ -110,4 +117,30 @@ public class MyFileController {
         return "文件"+fileName+"已删除";
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header"),
+            @ApiImplicitParam(name = "keyWord",value = "搜索关键字",dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name = "pageNum",value = "页数",dataType = "Integer",paramType = "query"),
+            @ApiImplicitParam(name = "pageSize",value = "页面数量",dataType = "Integer",paramType = "query")
+    })
+    @ApiOperation(value = "检索文件",httpMethod = "GET",response = ResponseBody.class)
+    @RequiresRoles("user")
+    @RequestMapping(value="/searchFile",produces="application/json;charset=UTF-8")
+    public List<com.testFileUpload.pojo.File> seachFile(@RequestParam("keyWord")String keyword,@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize){
+        List<com.testFileUpload.pojo.File> files = fileService.searchFile(keyword, pageNum, pageSize);
+        return files;
+    }
+
+    @ApiOperation(value = "查询所有文件",httpMethod = "GET",response = ResponseBody.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header"),
+            @ApiImplicitParam(name = "pageNum",value = "页数",dataType = "Integer",paramType = "query"),
+            @ApiImplicitParam(name = "pageSize",value = "页面数量",dataType = "Integer",paramType = "query")
+    })
+    @RequestMapping(value = "/getAllFile",method = RequestMethod.GET)
+    public List<com.testFileUpload.pojo.File> getAllFile(@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize){
+        return fileService.getAllFile(pageNum,pageSize);
+    }
 }

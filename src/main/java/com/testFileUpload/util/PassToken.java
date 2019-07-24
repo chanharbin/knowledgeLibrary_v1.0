@@ -1,3 +1,4 @@
+/*
 package com.testFileUpload.util;
 
 import java.lang.annotation.ElementType;
@@ -12,3 +13,4 @@ public @interface PassToken {
     boolean required() default true;
 }
 
+*/

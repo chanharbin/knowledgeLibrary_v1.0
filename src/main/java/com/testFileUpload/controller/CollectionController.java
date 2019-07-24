@@ -4,7 +4,6 @@ import ch.qos.logback.core.net.SyslogOutputStream;
 import com.auth0.jwt.JWT;
 import com.testFileUpload.pojo.Collection;
 import com.testFileUpload.service.CollectionService;
-import com.testFileUpload.util.UserLoginToken;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.UUID;
-@UserLoginToken
 @Controller
 public class CollectionController {
 
@@ -32,7 +30,6 @@ public class CollectionController {
      * @param collectionFileId
      * @return
      */
-    @UserLoginToken
     @RequestMapping(value="/collectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
     public String collectionFile(@RequestParam("collectionId") String collectionId,
@@ -57,7 +54,6 @@ public class CollectionController {
      * @param collectionId
      * @return
      */
-    @UserLoginToken
     @RequestMapping(value="/deleteCollectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
     public String deleteCollection(@RequestParam("collectionId") String collectionId){
@@ -70,7 +66,6 @@ public class CollectionController {
      * @param userId
      * @return
      */
-    @UserLoginToken
     @RequestMapping(value="/selectAllCollectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
     public List<Collection> selectAllCollection(@RequestParam("userId")int userId){

@@ -33,4 +33,5 @@ public class User {
     //用户类型，0是普通用户，1是管理员
     private int state;
 
+    private String role;
 }
