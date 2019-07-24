@@ -3,7 +3,7 @@ package com.testFileUpload.pojo;
 import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * 用户信息
@@ -15,7 +15,7 @@ public class User {
     //Id
     private int id;
     //用户Id
-    private long userId;
+    private String userId;
     //用户名
     private String userName;
     //用户密码
@@ -33,4 +33,10 @@ public class User {
     //用户权限
     private String role;
 
+    public User(String userName, String userPwd, String sex, String email) {
+        this.userName = userName;
+        this.userPwd = userPwd;
+        this.sex = sex;
+        this.email = email;
+    }
 }

@@ -1,6 +1,6 @@
 package com.testFileUpload.pojo;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * 评论信息
@@ -19,16 +19,9 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(int id, int commentId, String commentUserName,
-                   String commentFileId, String commentContext,
-                   Date commentTime, String state) {
-        this.id = id;
-        this.commentId = commentId;
+    public Comment(String commentUserName, String commentContext) {
         this.commentUserName = commentUserName;
-        this.commentFileId = commentFileId;
         this.commentContext = commentContext;
-        this.commentTime = commentTime;
-        this.state = state;
     }
 
     public int getId() {

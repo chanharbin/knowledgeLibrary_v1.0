@@ -1,3 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
-/.idea/
-/KnowledgeLibrary.iml
+.idea/
+KnowledgeLibrary.iml
+target/
+FileUploadDemo.iml

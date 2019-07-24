@@ -38,5 +38,9 @@ public class UserService {
        return users.get(0);
    }
 
+   public void insertUser(User user){
+       userMapper.insert(user);
+   }
+
 }
 
