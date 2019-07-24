@@ -10,7 +10,6 @@ import java.util.Date;
  */
 @TableName(value = "file")
 public class File {
-
     //编号
     private int id;
     //文件id

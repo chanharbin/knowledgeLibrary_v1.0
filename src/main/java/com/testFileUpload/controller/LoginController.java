@@ -53,13 +53,14 @@ public class LoginController {
         EntityWrapper<User> wrapper = new EntityWrapper<User>();
         wrapper.eq("user_name",username);
         List<User> users = userMapper.selectList(wrapper);
+        long userId = users.get(0).getUserId();
         String basePassword = users.get(0).getUserPwd();
         if (basePassword == null) {
             return "用户名错误";
         } else if (!basePassword.equals(password)) {
             return "密码错误";
         } else {
-            return "登录成功" + "jwt:" + JwtUtil.createToken(username);
+            return "登录成功" + "jwt:" + JwtUtil.createToken(userId,username);
         }
     }
 }
