@@ -6,16 +6,16 @@ package com.testFileUpload.pojo;
  */
 public class Collection {
     private int id;
-    private int collectionId;
+    private String collectionId;
     private int userId;
-    private int collectionType;
-    private int collectionFileId;
+    private String collectionType;
+    private String collectionFileId;
 
     public Collection() {
     }
 
-    public Collection(int id, int collectionId, int userId,
-                      int collectionType, int collectionFileId) {
+    public Collection(int id, String collectionId, int userId,
+                      String collectionType, String collectionFileId) {
         this.id = id;
         this.collectionId = collectionId;
         this.userId = userId;
@@ -31,11 +31,11 @@ public class Collection {
         this.id = id;
     }
 
-    public int getCollectionId() {
+    public String getCollectionId() {
         return collectionId;
     }
 
-    public void setCollectionId(int collectionId) {
+    public void setCollectionId(String collectionId) {
         this.collectionId = collectionId;
     }
 
@@ -47,19 +47,19 @@ public class Collection {
         this.userId = userId;
     }
 
-    public int getCollectionType() {
+    public String getCollectionType() {
         return collectionType;
     }
 
-    public void setCollectionType(int collectionType) {
+    public void setCollectionType(String collectionType) {
         this.collectionType = collectionType;
     }
 
-    public int getCollectionFileId() {
+    public String getCollectionFileId() {
         return collectionFileId;
     }
 
-    public void setCollectionFileId(int collectionFileId) {
+    public void setCollectionFileId(String collectionFileId) {
         this.collectionFileId = collectionFileId;
     }
 

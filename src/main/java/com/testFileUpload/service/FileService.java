@@ -14,4 +14,12 @@ public class FileService {
         Integer insert = fileMapper.insert(file);
         return insert;
     }
+    public int deleteFileByFileId(String fileId){
+        Integer delete = fileMapper.deleteFileByFileId(fileId);
+        return delete;
+    }
+    public File selectFileByFileId(String fileId){
+        File file = fileMapper.selectById(fileId);
+        return file;
+    }
 }

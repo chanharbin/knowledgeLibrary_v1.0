@@ -99,5 +99,15 @@ public class MyFileController {
 
         return "上传成功,文件url=="+url;
     }
+    @UserLoginToken
+    @RequestMapping(value="/deleteFile",produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public String deleteFile(@RequestParam("file_id") String fileId){
+        String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
+        com.testFileUpload.pojo.File file = fileService.selectFileByFileId(fileId);
+        String fileName = file.getFileName();
+        fileService.deleteFileByFileId(fileId);
+        return "文件"+fileName+"已删除";
+    }
 
 }
