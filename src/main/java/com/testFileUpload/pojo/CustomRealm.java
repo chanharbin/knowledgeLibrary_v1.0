@@ -75,11 +75,11 @@ public class CustomRealm extends AuthorizingRealm {
         wrapper.eq("user_name",username);
         List<User> users = userMapper.selectList(wrapper);
         String role = users.get(0).getRole();
-        Set<String> set = new HashSet<>();
+        Set<String> roleset = new HashSet<>();
         //需要将 role 封装到 Set 作为 info.setRoles() 的参数
-        set.add(role);
+        roleset.add(role);
         //设置该用户拥有的角色
-        info.setRoles(set);
+        info.setRoles(roleset);
         return info;
     }
 }
