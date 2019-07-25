@@ -125,7 +125,7 @@ public class MyFileController {
             @ApiImplicitParam(name = "pageSize",value = "页面数量",dataType = "Integer",paramType = "query")
     })
     @ApiOperation(value = "检索文件",httpMethod = "GET",response = ResponseBody.class)
-    @RequiresRoles("user")
+    @RequiresRoles("admin")
     @RequestMapping(value="/searchFile",produces="application/json;charset=UTF-8")
     public List<com.testFileUpload.pojo.File> seachFile(@RequestParam("keyWord")String keyword,@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize){
         List<com.testFileUpload.pojo.File> files = fileService.searchFile(keyword, pageNum, pageSize);

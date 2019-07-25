@@ -1,11 +1,13 @@
 package com.testFileUpload.controller;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.testFileUpload.common.BaseController;
+import com.testFileUpload.common.ResultObject;
+import com.testFileUpload.common.error.common.Errors;
+import com.testFileUpload.common.error.server.CommonError;
 import com.testFileUpload.mapper.UserMapper;
 import com.testFileUpload.pojo.User;
 import com.testFileUpload.util.JwtUtil;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @RestController
-public class LoginController {
+public class LoginController extends BaseController {
     private final UserMapper userMapper;
     @Autowired
     public LoginController(UserMapper userMapper){
@@ -49,19 +50,22 @@ public class LoginController {
      * @param password 密码
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(@RequestParam("username") String username,
-                           @RequestParam("password") String password) {
+    public ResultObject login(@RequestParam("username") String username,
+                              @RequestParam("password") String password) {
         User user = userMapper.selectByUserName(username);
+        if(user == null){
+            throw Errors.wrap(CommonError.UNEXPECTED);
+        }
         String basePassword = user.getUserPwd();
         String salt = user.getSalt();
         String userId = user.getUserId();
         String passwordEncoded = new SimpleHash("md5",password,salt,2).toString();
         if (basePassword == null) {
-            return "用户名错误";
+            return ResultObject.makeFail("登录失败");
         } else if (!basePassword.equals(passwordEncoded)) {
-            return "密码错误";
+            return ResultObject.makeFail("密码错误");
         } else {
-            return "登录成功" + "jwt:" + JwtUtil.createToken(userId,username);
+            return ResultObject.makeSuccess(JwtUtil.createToken(userId,username),"登录成功");
         }
     }
 }
