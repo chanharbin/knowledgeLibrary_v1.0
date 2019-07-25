@@ -2,6 +2,7 @@ package com.testFileUpload.pojo;
 
 import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -11,7 +12,10 @@ import java.util.Date;
  */
 @Data
 @TableName(value = "user")
-public class User {
+public class User  {
+    public User() {
+    }
+
     //Id
     private int id;
     //用户Id
@@ -32,11 +36,15 @@ public class User {
     private int point;
     //用户权限
     private String role;
+    //盐
+    private String salt;
 
-    public User(String userName, String userPwd, String sex, String email) {
+
+    public User(String userName, String userPwd, String sex, String email,String salt) {
         this.userName = userName;
         this.userPwd = userPwd;
         this.sex = sex;
         this.email = email;
+        this.salt = salt;
     }
 }

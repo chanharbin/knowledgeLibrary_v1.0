@@ -6,6 +6,7 @@ import com.testFileUpload.pojo.User;
 import com.testFileUpload.util.JwtUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,14 +51,14 @@ public class LoginController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(@RequestParam("username") String username,
                            @RequestParam("password") String password) {
-        EntityWrapper<User> wrapper = new EntityWrapper<User>();
-        wrapper.eq("user_name",username);
-        List<User> users = userMapper.selectList(wrapper);
-        long userId = users.get(0).getUserId();
-        String basePassword = users.get(0).getUserPwd();
+        User user = userMapper.selectByUserName(username);
+        String basePassword = user.getUserPwd();
+        String salt = user.getSalt();
+        String userId = user.getUserId();
+        String passwordEncoded = new SimpleHash("md5",password,salt,2).toString();
         if (basePassword == null) {
             return "用户名错误";
-        } else if (!basePassword.equals(password)) {
+        } else if (!basePassword.equals(passwordEncoded)) {
             return "密码错误";
         } else {
             return "登录成功" + "jwt:" + JwtUtil.createToken(userId,username);

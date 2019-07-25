@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/guest")
 public class GuestController{
 
-
     @RequestMapping(value = "/enter", method = RequestMethod.GET)
     public String login() {
         return "欢迎进入，您的身份是游客";
