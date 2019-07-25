@@ -66,6 +66,7 @@ public class SignupController {
                 user.setRole(role);
                 user.setPoint(1);
                 user.setPhoto("111");
+                user.setSalt("978dheugfyrjs");
                 userService.insertUser(user);
             }
         }

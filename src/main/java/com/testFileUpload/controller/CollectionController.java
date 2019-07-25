@@ -4,8 +4,12 @@ import ch.qos.logback.core.net.SyslogOutputStream;
 import com.auth0.jwt.JWT;
 import com.testFileUpload.pojo.Collection;
 import com.testFileUpload.service.CollectionService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,15 +34,23 @@ public class CollectionController {
      * @param collectionFileId
      * @return
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "Authorization token", required = true, dataType = "string", paramType = "header"),
+            @ApiImplicitParam(name = "collectionId",value = "收藏Id",required = true,dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name = "userId",value = "用户ID",required = true,dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name = "collectionType",value = "收藏类型",required = true,dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name = "collectionFileId",value = "收藏文件的编号",required = true,dataType = "String",paramType = "query")
+    })
+    @ApiOperation(value = "收藏文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/collectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
     public String collectionFile(@RequestParam("collectionId") String collectionId,
-                                 @RequestParam("userId")int userId,
+                                 @RequestParam("userId")String userId,
                                  @RequestParam("collectionType") String collectionType,
                                  @RequestParam("collectionFileId") String collectionFileId){
 
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
-        userId = Integer.valueOf(JWT.decode(token).getAudience().get(0));
+        userId = JWT.decode(token).getAudience().get(0);
         Collection collection = new Collection();
         collection.setCollectionFileId(collectionFileId);
         collection.setCollectionId(String.valueOf(UUID.randomUUID()));
@@ -54,6 +66,11 @@ public class CollectionController {
      * @param collectionId
      * @return
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "Authorization token", required = true, dataType = "string", paramType = "header"),
+            @ApiImplicitParam(name = "collectionId",value = "收藏Id",required = true,dataType = "String",paramType = "query"),
+    })
+    @ApiOperation(value = "删除收藏文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/deleteCollectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
     public String deleteCollection(@RequestParam("collectionId") String collectionId){
@@ -66,10 +83,18 @@ public class CollectionController {
      * @param userId
      * @return
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header"),
+            @ApiImplicitParam(name = "pageNum",value = "页数",dataType = "Integer",paramType = "query"),
+            @ApiImplicitParam(name = "pageSize",value = "页面数量",dataType = "Integer",paramType = "query"),
+            @ApiImplicitParam(name = "userId",value = "用户Id",dataType = "String",paramType = "query")
+    })
+    @ApiOperation(value = "检索用户的收藏文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/selectAllCollectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
-    public List<Collection> selectAllCollection(@RequestParam("userId")int userId){
-        List<Collection> list = collectionService.selectByUserId(userId);
+    public List<Collection> selectAllCollection(@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize, @RequestParam("userId")String userId){
+        List<Collection> list = collectionService.selectCollectionByUserIdToPage(pageNum,pageSize,userId);
         System.out.println("用户收藏信息搜索成功");
         return list;
     }

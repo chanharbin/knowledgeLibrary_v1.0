@@ -1,5 +1,6 @@
 package com.testFileUpload.pojo;
 
+
 /**
  * 用户收藏信息
  * @author HUANGZHONGGUI3
@@ -7,14 +8,14 @@ package com.testFileUpload.pojo;
 public class Collection {
     private int id;
     private String collectionId;
-    private int userId;
+    private String userId;
     private String collectionType;
     private String collectionFileId;
 
     public Collection() {
     }
 
-    public Collection(int id, String collectionId, int userId,
+    public Collection(int id, String collectionId, String userId,
                       String collectionType, String collectionFileId) {
         this.id = id;
         this.collectionId = collectionId;
@@ -39,11 +40,11 @@ public class Collection {
         this.collectionId = collectionId;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

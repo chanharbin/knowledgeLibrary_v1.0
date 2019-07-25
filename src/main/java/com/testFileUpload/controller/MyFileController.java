@@ -107,6 +107,13 @@ public class MyFileController {
 
         return "上传成功,文件url=="+url;
     }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header"),
+            @ApiImplicitParam(name = "fileId", value = "文件编号", required = true,dataType = "String",paramType = "query"),
+    })
+    @ApiOperation(value = "删除文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/deleteFile",produces="application/json;charset=UTF-8")
     @ResponseBody
     public String deleteFile(@RequestParam("file_id") String fileId){
@@ -125,7 +132,7 @@ public class MyFileController {
             @ApiImplicitParam(name = "pageSize",value = "页面数量",dataType = "Integer",paramType = "query")
     })
     @ApiOperation(value = "检索文件",httpMethod = "GET",response = ResponseBody.class)
-    @RequiresRoles("user")
+    @RequiresRoles({"user","admin"})
     @RequestMapping(value="/searchFile",produces="application/json;charset=UTF-8")
     public List<com.testFileUpload.pojo.File> seachFile(@RequestParam("keyWord")String keyword,@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize){
         List<com.testFileUpload.pojo.File> files = fileService.searchFile(keyword, pageNum, pageSize);

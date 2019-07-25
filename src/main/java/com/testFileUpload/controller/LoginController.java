@@ -51,6 +51,7 @@ public class LoginController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(@RequestParam("username") String username,
                            @RequestParam("password") String password) {
+
         User user = userMapper.selectByUserName(username);
         String basePassword = user.getUserPwd();
         String salt = user.getSalt();

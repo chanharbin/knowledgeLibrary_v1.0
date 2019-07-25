@@ -1,5 +1,7 @@
 package com.testFileUpload.service;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.testFileUpload.mapper.CollectionMapper;
 import com.testFileUpload.pojo.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +34,7 @@ public class CollectionService {
         return coll;
     }
 
-    public List<Collection> selectByUserId(int userId){
-        List<Collection> list = collectionMapper.selectByUserId(userId);
-        return list;
+    public List<Collection> selectCollectionByUserIdToPage(int pageNum,int pageSize,String userId){
+        return collectionMapper.selectPage(new Page<Collection>(pageNum,pageSize),new EntityWrapper<Collection>().eq("user_id",userId));
     }
 }
