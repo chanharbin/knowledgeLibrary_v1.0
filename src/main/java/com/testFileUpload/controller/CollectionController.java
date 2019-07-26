@@ -2,6 +2,7 @@ package com.testFileUpload.controller;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 import com.auth0.jwt.JWT;
+import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.pojo.Collection;
 import com.testFileUpload.service.CollectionService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,10 +45,10 @@ public class CollectionController {
     @ApiOperation(value = "收藏文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/collectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
-    public String collectionFile(@RequestParam("collectionId") String collectionId,
-                                 @RequestParam("userId")String userId,
-                                 @RequestParam("collectionType") String collectionType,
-                                 @RequestParam("collectionFileId") String collectionFileId){
+    public ResultObject collectionFile(@RequestParam("collectionId") String collectionId,
+                                       @RequestParam("userId")String userId,
+                                       @RequestParam("collectionType") String collectionType,
+                                       @RequestParam("collectionFileId") String collectionFileId){
 
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
         userId = JWT.decode(token).getAudience().get(0);
@@ -57,8 +58,7 @@ public class CollectionController {
         collection.setCollectionType(collectionType);
         collection.setUserId(userId);
         int coll = collectionService.insert(collection);
-        System.out.println("收藏成功" + coll);
-        return "收藏成功";
+        return ResultObject.makeSuccess("收藏成功");
     }
 
     /**
@@ -73,9 +73,9 @@ public class CollectionController {
     @ApiOperation(value = "删除收藏文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/deleteCollectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
-    public String deleteCollection(@RequestParam("collectionId") String collectionId){
+    public ResultObject deleteCollection(@RequestParam("collectionId") String collectionId){
         collectionService.delete(collectionId);
-        return "删除成功";
+        return ResultObject.makeSuccess("删除成功");
     }
 
     /**
@@ -93,10 +93,9 @@ public class CollectionController {
     @ApiOperation(value = "检索用户的收藏文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/selectAllCollectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
-    public List<Collection> selectAllCollection(@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize, @RequestParam("userId")String userId){
+    public ResultObject<List<Collection>> selectAllCollection(@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize, @RequestParam("userId")String userId){
         List<Collection> list = collectionService.selectCollectionByUserIdToPage(pageNum,pageSize,userId);
-        System.out.println("用户收藏信息搜索成功");
-        return list;
+        return  ResultObject.makeSuccess(list,"用户收藏信息搜索成功");
     }
 
 

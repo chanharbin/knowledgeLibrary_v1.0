@@ -14,6 +14,7 @@ import java.util.List;
 public class FileService {
     @Autowired
     private FileMapper fileMapper;
+
     public int uploadFile(File file){
         Integer insert = fileMapper.insert(file);
         return insert;
@@ -33,5 +34,9 @@ public class FileService {
     public File selectFileByFileId(String fileId){
         File file = fileMapper.selectById(fileId);
         return file;
+    }
+
+    public List<File> displayByVisits(){
+        return fileMapper.displayFileByVisits();
     }
 }
