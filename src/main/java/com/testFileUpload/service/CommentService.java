@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.testFileUpload.mapper.CommentMapper;
 import com.testFileUpload.pojo.Comment;
-import com.testFileUpload.pojo.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

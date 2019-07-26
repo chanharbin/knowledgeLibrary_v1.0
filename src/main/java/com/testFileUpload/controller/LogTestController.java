@@ -14,7 +14,7 @@ import java.io.IOException;
 public class LogTestController {
     //protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @LogAnnotation
+    @LogAnnotation()
     @RequestMapping(value = "/log")
     @ResponseBody
     public void log(HttpServletResponse response) throws IOException {
