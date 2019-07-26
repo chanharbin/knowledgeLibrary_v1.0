@@ -1,83 +1,27 @@
 package com.testFileUpload.pojo;
 
+import lombok.Data;
+
 import java.util.Date;
 
 /**
  * 评论信息
  * @author HUANGZHONGGUI3
  */
+@Data
 public class Comment {
 
     private int id;
-    private int commentId;
-    private String commentUserName;
+    private String commentId;
+    private String commentUsername;
     private String commentFileId;
     private String commentContext;
     private Date commentTime;
     private String state;
 
-    public Comment() {
-    }
-
-    public Comment(String commentUserName, String commentContext) {
-        this.commentUserName = commentUserName;
+    public Comment(String commentUsername, String commentContext) {
+        this.commentUsername = commentUsername;
         this.commentContext = commentContext;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getCommentId() {
-        return commentId;
-    }
-
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
-    }
-
-    public String getCommentUserName() {
-        return commentUserName;
-    }
-
-    public void setCommentUserName(String commentUserName) {
-        this.commentUserName = commentUserName;
-    }
-
-    public String getCommentFileId() {
-        return commentFileId;
-    }
-
-    public void setCommentFileId(String commentFileId) {
-        this.commentFileId = commentFileId;
-    }
-
-    public String getCommentContext() {
-        return commentContext;
-    }
-
-    public void setCommentContext(String commentContext) {
-        this.commentContext = commentContext;
-    }
-
-    public Date getCommentTime() {
-        return commentTime;
-    }
-
-    public void setCommentTime(Date commentTime) {
-        this.commentTime = commentTime;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
     }
 
     @Override
@@ -85,7 +29,7 @@ public class Comment {
         return "Comment{" +
                 "id=" + id +
                 ", commentId=" + commentId +
-                ", commentUserName='" + commentUserName + '\'' +
+                ", commentUsername='" + commentUsername + '\'' +
                 ", commentFileId='" + commentFileId + '\'' +
                 ", commentContext='" + commentContext + '\'' +
                 ", commentTime=" + commentTime +
