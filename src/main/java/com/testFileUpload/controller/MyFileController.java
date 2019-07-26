@@ -1,6 +1,7 @@
 package com.testFileUpload.controller;
 
 import com.auth0.jwt.JWT;
+import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.service.FileService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -38,7 +39,7 @@ public class MyFileController {
     })
     @ApiOperation(value = "上传文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/uploadFile",produces="application/json;charset=UTF-8",method = RequestMethod.POST)
-    public String uploadFile(@RequestParam("fileName") MultipartFile file,@RequestParam("description") String description, @RequestParam("keyWord") String keyWord,
+    public ResultObject<com.testFileUpload.pojo.File> uploadFile(@RequestParam("fileName") MultipartFile file,@RequestParam("description") String description, @RequestParam("keyWord") String keyWord,
                              @RequestParam("fileType")String fileType) {
 
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
@@ -48,7 +49,7 @@ public class MyFileController {
         System.out.print("上传文件===" + "\n");
         //判断文件是否为空
         if (file.isEmpty()) {
-            return "上传文件不可为空";
+            return ResultObject.makeFail("上传文件不能为空");
         }
         // 获取文件名
         String fileName = file.getOriginalFilename();
@@ -67,7 +68,7 @@ public class MyFileController {
 
         //判断文件是否已经存在
         if (dest.exists()) {
-            return "文件已经存在";
+            return ResultObject.makeFail("文件已存在");
         }
 
         //判断文件父目录是否存在
@@ -102,10 +103,10 @@ public class MyFileController {
             System.out.print("保存的完整url===="+url+"\n");
 
         } catch (IOException e) {
-            return "上传失败";
+            return ResultObject.makeFail("上传失败");
         }
 
-        return "上传成功,文件url=="+url;
+        return ResultObject.makeSuccess("文件上传成功");
     }
 
     @ApiImplicitParams({
@@ -116,12 +117,11 @@ public class MyFileController {
     @ApiOperation(value = "删除文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/deleteFile",produces="application/json;charset=UTF-8")
     @ResponseBody
-    public String deleteFile(@RequestParam("file_id") String fileId){
+    public ResultObject<com.testFileUpload.pojo.File> deleteFile(@RequestParam("file_id") String fileId){
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
         com.testFileUpload.pojo.File file = fileService.selectFileByFileId(fileId);
-        String fileName = file.getFileName();
         fileService.deleteFileByFileId(fileId);
-        return "文件"+fileName+"已删除";
+        return new ResultObject<com.testFileUpload.pojo.File>("删除成功");
     }
 
     @ApiImplicitParams({
@@ -148,5 +148,19 @@ public class MyFileController {
     @RequestMapping(value = "/getAllFile",method = RequestMethod.GET)
     public List<com.testFileUpload.pojo.File> getAllFile(@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize){
         return fileService.getAllFile(pageNum,pageSize);
+    }
+
+    /**
+     * 文档访问量前十展示
+     * @return
+     */
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header"),
+    })
+    @ApiOperation(value = "文件访问量前十排名",httpMethod = "GET",response = ResponseBody.class)
+    @RequestMapping(value = "/dispalyFileByVisits",method = RequestMethod.GET)
+    public List<com.testFileUpload.pojo.File> dispalyFileByVisits(){
+        return fileService.displayByVisits();
     }
 }

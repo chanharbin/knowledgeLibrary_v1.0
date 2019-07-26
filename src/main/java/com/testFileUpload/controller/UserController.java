@@ -1,5 +1,6 @@
 package com.testFileUpload.controller;
 
+import com.testFileUpload.common.ResultObject;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class UserController{
 
     @GetMapping("/getMessage")
     @RequiresRoles(logical = Logical.OR, value = {"user", "admin"})
-    public String getMessage() {
-        return "您拥有用户权限，可以获得该接口的信息！";
+    public ResultObject<UserController> getMessage() {
+        return ResultObject.makeSuccess("您拥有该权限，您可以访问所有接口");
     }
 }
