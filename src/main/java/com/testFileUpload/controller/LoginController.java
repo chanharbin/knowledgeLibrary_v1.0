@@ -7,6 +7,7 @@ import com.testFileUpload.common.error.server.CommonError;
 import com.testFileUpload.mapper.UserMapper;
 import com.testFileUpload.pojo.User;
 import com.testFileUpload.util.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 
+@Slf4j
 @RestController
 public class LoginController extends BaseController {
     private final UserMapper userMapper;
@@ -51,7 +54,7 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResultObject login(@RequestParam("username") String username,
-                              @RequestParam("password") String password) {
+                              @RequestParam("password") String password,HttpServletResponse httpServletResponse) {
         User user = userMapper.selectByUserName(username);
         if(user == null){
             throw Errors.wrap(CommonError.UNEXPECTED);
@@ -65,7 +68,9 @@ public class LoginController extends BaseController {
         } else if (!basePassword.equals(passwordEncoded)) {
             return ResultObject.makeFail("密码错误");
         } else {
-            return ResultObject.makeSuccess(JwtUtil.createToken(userId,username),"登录成功");
+            log.info("登录用户"+username);
+            httpServletResponse.setHeader("token",JwtUtil.createToken(userId,username));
+            return ResultObject.makeSuccess("用户名:"+ username,"登录成功");
         }
     }
 }
