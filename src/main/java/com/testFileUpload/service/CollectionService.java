@@ -25,7 +25,7 @@ public class CollectionService {
      * @return
      */
     public int delete(String collectionId){
-        Integer delete = collectionMapper.deleteById(collectionId);
+        Integer delete = collectionMapper.deleteByCollectionId(collectionId);
         return delete;
     }
 

@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.testFileUpload.aop.LogAnnotation;
 import com.testFileUpload.common.ResultObject;
-import com.testFileUpload.mapper.CommentMapper;
 import com.testFileUpload.pojo.Comment;
 import com.testFileUpload.service.CommentService;
 import io.swagger.annotations.ApiImplicitParam;

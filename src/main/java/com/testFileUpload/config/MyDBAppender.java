@@ -88,8 +88,9 @@ public class MyDBAppender extends DBAppenderBase<ILoggingEvent> {
 
     private StackTraceElement extractFirstCaller(StackTraceElement[] callerDataArray) {
         StackTraceElement caller = EMPTY_CALLER_DATA;
-        if (hasAtLeastOneNonNullElement(callerDataArray))
+        if (hasAtLeastOneNonNullElement(callerDataArray)) {
             caller = callerDataArray[0];
+        }
         return caller;
     }
 
@@ -107,6 +108,7 @@ public class MyDBAppender extends DBAppenderBase<ILoggingEvent> {
         return insertSQL;
     }
 
+    @Override
     protected void secondarySubAppend(ILoggingEvent event, Connection connection, long eventId) throws Throwable {
     }
 }

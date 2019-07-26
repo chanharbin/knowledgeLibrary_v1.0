@@ -1,6 +1,5 @@
 package com.testFileUpload.controller;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.auth0.jwt.JWT;
 import com.testFileUpload.aop.LogAnnotation;
 import com.testFileUpload.common.ResultObject;
@@ -9,9 +8,7 @@ import com.testFileUpload.service.CollectionService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,7 +62,7 @@ public class CollectionController {
      */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Authorization token", required = true, dataType = "string", paramType = "header"),
-            @ApiImplicitParam(name = "collectionId",value = "收藏Id",required = true,dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name = "collectionId",value = "收藏Id",required = false,dataType = "String",paramType = "query"),
     })
     @ApiOperation(value = "删除收藏文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/deleteCollectionFile",produces="application/json;charset=UTF-8")
