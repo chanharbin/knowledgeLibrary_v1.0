@@ -1,6 +1,7 @@
 package com.testFileUpload.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.mapper.UserMapper;
 import com.testFileUpload.pojo.User;
 import com.testFileUpload.service.UserService;
@@ -43,9 +44,10 @@ public class SignupController {
      * @param password_confirm 密码确认
      * @param email 邮箱
      * @param sex 性别
+     * @param role 用户权限
      */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(@RequestParam("username") String username, @RequestParam("password") String password,
+    public ResultObject register(@RequestParam("username") String username, @RequestParam("password") String password,
                        @RequestParam("password_confirm") String password_confirm,
                        @RequestParam("email") String email, @RequestParam("sex") String sex,
                            @RequestParam("role")String role){
@@ -54,7 +56,7 @@ public class SignupController {
         List<User> users = userMapper.selectList(wrapper);
         if(users.isEmpty()){
             if(!password.equals(password_confirm)){
-                return "密码确认失败";
+                ResultObject.makeFail("密码再次确认失败");
             }
             else {
                 String salt = new SecureRandomNumberGenerator().nextBytes().toString(); //盐量随机
@@ -71,8 +73,8 @@ public class SignupController {
             }
         }
         else{
-            return "用户已注册";
+            ResultObject.makeFail("用户已注册");
         }
-        return "注册成功！";
+        return ResultObject.makeSuccess("注册成功");
     }
 }

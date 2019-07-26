@@ -2,6 +2,8 @@ package com.testFileUpload.controller;
 
 import com.auth0.jwt.JWT;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.testFileUpload.common.ResultObject;
+import com.testFileUpload.mapper.CommentMapper;
 import com.testFileUpload.pojo.Comment;
 import com.testFileUpload.service.CommentService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -39,7 +41,7 @@ public class CommentController {
     @ApiOperation(value = "提交评论",httpMethod = "POST",response = ResponseBody.class)
     @RequiresRoles("user")
     @RequestMapping(value = "/commentSubmit", method = RequestMethod.POST)
-    public String commentSubmit(@RequestParam("file_id") String fileId, @RequestParam("content") String content){
+    public ResultObject commentSubmit(@RequestParam("file_id") String fileId, @RequestParam("content") String content){
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
         String commentUsername = JWT.decode(token).getAudience().get(1);
         Comment comment = new Comment(commentUsername,content);
@@ -49,7 +51,7 @@ public class CommentController {
         comment.setState("1");
         comment.setCommentId(String.valueOf(UUID.randomUUID()));
         commentService.insert(comment);
-        return "评论成功！";
+        return ResultObject.makeSuccess("评论成功");
     }
 
 
@@ -70,10 +72,10 @@ public class CommentController {
     @ApiOperation(value = "查看文件评论",httpMethod = "GET",response = ResponseBody.class)
     @RequiresRoles("user")
     @RequestMapping(value = "/comment_display_file", method=RequestMethod.GET)
-    public List<Comment> displayCommentFile(@RequestParam("file_id") String fileId,@RequestParam("pageNum")int pageNum,
+    public ResultObject<List<Comment>> displayCommentFile(@RequestParam("file_id") String fileId,@RequestParam("pageNum")int pageNum,
                                             @RequestParam("pageSize")int pageSize){
         Page<Comment> page = new Page<>(pageNum,pageSize);
-        return commentService.displayCommentFile(page,fileId);
+        return ResultObject.makeSuccess(commentService.displayCommentFile(page,fileId),"查看文件评论成功");
     }
 
     /**
@@ -91,12 +93,12 @@ public class CommentController {
     @ApiOperation(value = "查看用户评论",httpMethod = "GET",response = ResponseBody.class)
     @RequiresRoles("user")
     @RequestMapping(value = "/comment_display_user", method=RequestMethod.GET)
-    public List<Comment> displayCommentUser(@RequestParam("pageNum")int pageNum,
+    public ResultObject<List<Comment>> displayCommentUser(@RequestParam("pageNum")int pageNum,
                                             @RequestParam("pageSize")int pageSize){
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
         String userName = JWT.decode(token).getAudience().get(1);
         List<Comment> commentsFile = commentService.displayCommentUser(pageNum,pageSize,userName);
-        return commentsFile;
+        return ResultObject.makeSuccess(commentsFile,"查看用户评论成功");
     }
 
     /**
@@ -112,9 +114,9 @@ public class CommentController {
     @ApiOperation(value = "删除用户评论",httpMethod = "GET",response = ResponseBody.class)
     @RequiresRoles("user")
     @RequestMapping(value = "/comment_del", method=RequestMethod.GET)
-    public  String delComment(@RequestParam("comment_id") int commentId){
+    public  ResultObject delComment(@RequestParam("comment_id") int commentId){
         commentService.deleteFileByCommentId(commentId);
-        return "评论删除成功！";
+        return ResultObject.makeSuccess("评论删除成功！");
     }
 
 }
