@@ -122,6 +122,12 @@
       <version>2.6.1</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.github.xiaoymin</groupId>
+      <artifactId>swagger-bootstrap-ui</artifactId>
+      <version>1.9.0</version>
+    </dependency>
+
     <!--shiro-->
     <dependency>
       <groupId>org.apache.shiro</groupId>
