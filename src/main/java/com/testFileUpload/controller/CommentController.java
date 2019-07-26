@@ -2,6 +2,7 @@ package com.testFileUpload.controller;
 
 import com.auth0.jwt.JWT;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.testFileUpload.aop.LogAnnotation;
 import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.mapper.CommentMapper;
 import com.testFileUpload.pojo.Comment;
@@ -41,6 +42,7 @@ public class CommentController {
     @ApiOperation(value = "提交评论",httpMethod = "POST",response = ResponseBody.class)
     @RequiresRoles("user")
     @RequestMapping(value = "/commentSubmit", method = RequestMethod.POST)
+    @LogAnnotation
     public ResultObject commentSubmit(@RequestParam("file_id") String fileId, @RequestParam("content") String content){
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
         String commentUsername = JWT.decode(token).getAudience().get(1);
@@ -72,6 +74,7 @@ public class CommentController {
     @ApiOperation(value = "查看文件评论",httpMethod = "GET",response = ResponseBody.class)
     @RequiresRoles("user")
     @RequestMapping(value = "/comment_display_file", method=RequestMethod.GET)
+    @LogAnnotation
     public ResultObject<List<Comment>> displayCommentFile(@RequestParam("file_id") String fileId,@RequestParam("pageNum")int pageNum,
                                             @RequestParam("pageSize")int pageSize){
         Page<Comment> page = new Page<>(pageNum,pageSize);
@@ -93,6 +96,7 @@ public class CommentController {
     @ApiOperation(value = "查看用户评论",httpMethod = "GET",response = ResponseBody.class)
     @RequiresRoles("user")
     @RequestMapping(value = "/comment_display_user", method=RequestMethod.GET)
+    @LogAnnotation
     public ResultObject<List<Comment>> displayCommentUser(@RequestParam("pageNum")int pageNum,
                                             @RequestParam("pageSize")int pageSize){
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
@@ -114,6 +118,7 @@ public class CommentController {
     @ApiOperation(value = "删除用户评论",httpMethod = "GET",response = ResponseBody.class)
     @RequiresRoles("user")
     @RequestMapping(value = "/comment_del", method=RequestMethod.GET)
+    @LogAnnotation
     public  ResultObject delComment(@RequestParam("comment_id") int commentId){
         commentService.deleteFileByCommentId(commentId);
         return ResultObject.makeSuccess("评论删除成功！");

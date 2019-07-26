@@ -1,5 +1,6 @@
 package com.testFileUpload.controller;
 
+import com.testFileUpload.aop.LogAnnotation;
 import com.testFileUpload.common.BaseController;
 import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.common.error.common.Errors;
@@ -7,6 +8,8 @@ import com.testFileUpload.common.error.server.CommonError;
 import com.testFileUpload.mapper.UserMapper;
 import com.testFileUpload.pojo.User;
 import com.testFileUpload.util.JwtUtil;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -52,6 +55,8 @@ public class LoginController extends BaseController {
      * @param username 用户名
      * @param password 密码
      */
+    @ApiImplicitParams({@ApiImplicitParam(name = "username" ,value = "用户名", dataType = "string",paramType = "query"),
+    @ApiImplicitParam(name = "password" ,value = "用户密码",dataType = "string",paramType = "query")})
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResultObject login(@RequestParam("username") String username,
                               @RequestParam("password") String password,HttpServletResponse httpServletResponse) {
@@ -68,7 +73,7 @@ public class LoginController extends BaseController {
         } else if (!basePassword.equals(passwordEncoded)) {
             return ResultObject.makeFail("密码错误");
         } else {
-            log.info("登录用户"+username);
+            log.info("username"+username);
             httpServletResponse.setHeader("token",JwtUtil.createToken(userId,username));
             return ResultObject.makeSuccess("用户名:"+ username,"登录成功");
         }

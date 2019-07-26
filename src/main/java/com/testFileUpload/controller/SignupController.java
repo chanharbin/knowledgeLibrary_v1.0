@@ -1,11 +1,14 @@
 package com.testFileUpload.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.testFileUpload.aop.LogAnnotation;
 import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.mapper.UserMapper;
 import com.testFileUpload.pojo.User;
 import com.testFileUpload.service.UserService;
 import com.testFileUpload.util.JwtUtil;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
@@ -31,12 +34,6 @@ public class SignupController {
     public SignupController(UserMapper userMapper){
         this.userMapper = userMapper;
     }
-
-    @RequestMapping(value = "/sign_up", method = RequestMethod.GET)
-    public String signUp() {
-        return "sign_up";
-    }
-
     /**
      * 注册
      * @param username 用户名
@@ -46,6 +43,15 @@ public class SignupController {
      * @param sex 性别
      * @param role 用户权限
      */
+    @LogAnnotation
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username", value = "用户名" ,dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "password",value = "密码",dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "password_confirm",value = "密码确认",dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "email",value = "邮件",dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "sex",value = "性别",dataType = "string",paramType = "query"),
+            @ApiImplicitParam(name = "role",value = "角色",dataType = "string",paramType = "query"),
+    })
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResultObject register(@RequestParam("username") String username, @RequestParam("password") String password,
                        @RequestParam("password_confirm") String password_confirm,

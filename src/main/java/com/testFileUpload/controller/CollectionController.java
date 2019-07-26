@@ -2,6 +2,7 @@ package com.testFileUpload.controller;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 import com.auth0.jwt.JWT;
+import com.testFileUpload.aop.LogAnnotation;
 import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.pojo.Collection;
 import com.testFileUpload.service.CollectionService;
@@ -29,29 +30,25 @@ public class CollectionController {
 
     /**
      * 用户添加一条收藏
-     * @param collectionId
-     * @param userId
      * @param collectionType
      * @param collectionFileId
      * @return
      */
+
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Authorization token", required = true, dataType = "string", paramType = "header"),
-            @ApiImplicitParam(name = "collectionId",value = "收藏Id",required = true,dataType = "String",paramType = "query"),
-            @ApiImplicitParam(name = "userId",value = "用户ID",required = true,dataType = "String",paramType = "query"),
             @ApiImplicitParam(name = "collectionType",value = "收藏类型",required = true,dataType = "String",paramType = "query"),
             @ApiImplicitParam(name = "collectionFileId",value = "收藏文件的编号",required = true,dataType = "String",paramType = "query")
     })
     @ApiOperation(value = "收藏文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/collectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
-    public ResultObject collectionFile(@RequestParam("collectionId") String collectionId,
-                                       @RequestParam("userId")String userId,
-                                       @RequestParam("collectionType") String collectionType,
+    @LogAnnotation
+    public ResultObject collectionFile(@RequestParam("collectionType") String collectionType,
                                        @RequestParam("collectionFileId") String collectionFileId){
 
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
-        userId = JWT.decode(token).getAudience().get(0);
+        String userId = JWT.decode(token).getAudience().get(0);
         Collection collection = new Collection();
         collection.setCollectionFileId(collectionFileId);
         collection.setCollectionId(String.valueOf(UUID.randomUUID()));
@@ -73,6 +70,7 @@ public class CollectionController {
     @ApiOperation(value = "删除收藏文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/deleteCollectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
+    @LogAnnotation
     public ResultObject deleteCollection(@RequestParam("collectionId") String collectionId){
         collectionService.delete(collectionId);
         return ResultObject.makeSuccess("删除成功");
@@ -93,6 +91,7 @@ public class CollectionController {
     @ApiOperation(value = "检索用户的收藏文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/selectAllCollectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
+    @LogAnnotation
     public ResultObject<List<Collection>> selectAllCollection(@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize, @RequestParam("userId")String userId){
         List<Collection> list = collectionService.selectCollectionByUserIdToPage(pageNum,pageSize,userId);
         return  ResultObject.makeSuccess(list,"用户收藏信息搜索成功");

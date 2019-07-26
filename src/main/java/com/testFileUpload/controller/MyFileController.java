@@ -1,11 +1,13 @@
 package com.testFileUpload.controller;
 
 import com.auth0.jwt.JWT;
+import com.testFileUpload.aop.LogAnnotation;
 import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.service.FileService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,13 +41,11 @@ public class MyFileController {
     })
     @ApiOperation(value = "上传文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/uploadFile",produces="application/json;charset=UTF-8",method = RequestMethod.POST)
+    @RequiresRoles("user")
     public ResultObject<com.testFileUpload.pojo.File> uploadFile(@RequestParam("fileName") MultipartFile file,@RequestParam("description") String description, @RequestParam("keyWord") String keyWord,
                              @RequestParam("fileType")String fileType) {
 
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
-
-
-
         System.out.print("上传文件===" + "\n");
         //判断文件是否为空
         if (file.isEmpty()) {
@@ -55,22 +55,17 @@ public class MyFileController {
         String fileName = file.getOriginalFilename();
         fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + fileName;
         System.out.print("（加个时间戳，尽量避免文件名称重复）保存的文件名为: "+fileName+"\n");
-
-
         //加个时间戳，尽量避免文件名称重复
         String path = "D:/fileUpload/" +fileName;
         //String path = "E:/fileUpload/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + fileName;
         //文件绝对路径
         System.out.print("保存文件绝对路径"+path+"\n");
-
         //创建文件路径
         File dest = new File(path);
-
         //判断文件是否已经存在
         if (dest.exists()) {
             return ResultObject.makeFail("文件已存在");
         }
-
         //判断文件父目录是否存在
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdir();
@@ -101,7 +96,6 @@ public class MyFileController {
             int result= fileService.uploadFile(file1);
             System.out.print("插入结果"+result+"\n");
             System.out.print("保存的完整url===="+url+"\n");
-
         } catch (IOException e) {
             return ResultObject.makeFail("上传失败");
         }
@@ -115,6 +109,8 @@ public class MyFileController {
             @ApiImplicitParam(name = "fileId", value = "文件编号", required = true,dataType = "String",paramType = "query"),
     })
     @ApiOperation(value = "删除文件",httpMethod = "POST",response = ResponseBody.class)
+    @LogAnnotation
+    @RequiresRoles(logical = Logical.OR, value = {"user", "admin"})
     @RequestMapping(value="/deleteFile",produces="application/json;charset=UTF-8")
     @ResponseBody
     public ResultObject<com.testFileUpload.pojo.File> deleteFile(@RequestParam("file_id") String fileId){
@@ -132,7 +128,8 @@ public class MyFileController {
             @ApiImplicitParam(name = "pageSize",value = "页面数量",dataType = "Integer",paramType = "query")
     })
     @ApiOperation(value = "检索文件",httpMethod = "GET",response = ResponseBody.class)
-    @RequiresRoles("admin")
+    @LogAnnotation
+    @RequiresRoles("user")
     @RequestMapping(value="/searchFile",produces="application/json;charset=UTF-8")
     public List<com.testFileUpload.pojo.File> seachFile(@RequestParam("keyWord")String keyword,@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize){
         List<com.testFileUpload.pojo.File> files = fileService.searchFile(keyword, pageNum, pageSize);
@@ -145,6 +142,8 @@ public class MyFileController {
             @ApiImplicitParam(name = "pageNum",value = "页数",dataType = "Integer",paramType = "query"),
             @ApiImplicitParam(name = "pageSize",value = "页面数量",dataType = "Integer",paramType = "query")
     })
+    @LogAnnotation
+    @RequiresRoles(logical = Logical.OR, value = {"user", "admin"})
     @RequestMapping(value = "/getAllFile",method = RequestMethod.GET)
     public List<com.testFileUpload.pojo.File> getAllFile(@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize){
         return fileService.getAllFile(pageNum,pageSize);
@@ -159,6 +158,7 @@ public class MyFileController {
                     required = true, dataType = "string", paramType = "header"),
     })
     @ApiOperation(value = "文件访问量前十排名",httpMethod = "GET",response = ResponseBody.class)
+    @RequiresRoles(logical = Logical.OR, value = {"user", "admin"})
     @RequestMapping(value = "/dispalyFileByVisits",method = RequestMethod.GET)
     public List<com.testFileUpload.pojo.File> dispalyFileByVisits(){
         return fileService.displayByVisits();
