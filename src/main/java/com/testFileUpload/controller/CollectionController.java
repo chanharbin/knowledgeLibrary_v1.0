@@ -97,7 +97,4 @@ public class CollectionController {
         List<Collection> list = collectionService.selectCollectionByUserIdToPage(pageNum,pageSize,userId);
         return  ResultObject.makeSuccess(list,"用户收藏信息搜索成功");
     }
-
-
-
 }
