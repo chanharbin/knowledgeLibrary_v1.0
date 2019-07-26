@@ -6,6 +6,7 @@ import com.testFileUpload.aop.LogAnnotation;
 import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.pojo.Collection;
 import com.testFileUpload.service.CollectionService;
+import com.testFileUpload.util.JwtUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -92,7 +93,9 @@ public class CollectionController {
     @RequestMapping(value="/selectAllCollectionFile",produces="application/json;charset=UTF-8")
     @ResponseBody
     @LogAnnotation
-    public ResultObject<List<Collection>> selectAllCollection(@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize, @RequestParam("userId")String userId){
+    public ResultObject<List<Collection>> selectAllCollection(@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize){
+        String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
+        String userId = JWT.decode(token).getAudience().get(0);
         List<Collection> list = collectionService.selectCollectionByUserIdToPage(pageNum,pageSize,userId);
         return  ResultObject.makeSuccess(list,"用户收藏信息搜索成功");
     }
