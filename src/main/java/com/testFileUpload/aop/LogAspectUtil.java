@@ -52,7 +52,7 @@ public class LogAspectUtil {
         String beanName = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
 
-        logger.info("UserName：" + userName + "URL: " + httpServletRequest.getRequestURL().toString() + "HTTP_METHOD:" + httpServletRequest.getMethod()
+        logger.info("UserName：" + userName + " URL: " + httpServletRequest.getRequestURL().toString() + "HTTP_METHOD:" + httpServletRequest.getMethod()
         + "IP:" + httpServletRequest.getRemoteAddr() + "beanName：" + beanName + "methodName：" + methodName);
     }
 
