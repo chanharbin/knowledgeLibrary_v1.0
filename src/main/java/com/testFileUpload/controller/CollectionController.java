@@ -76,7 +76,6 @@ public class CollectionController {
 
     /**
      * 根据用户的Id搜索该用户的所有的收藏
-     * @param userId
      * @return
      */
     @ApiImplicitParams({

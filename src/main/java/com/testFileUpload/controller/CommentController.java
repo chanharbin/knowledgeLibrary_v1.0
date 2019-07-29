@@ -122,5 +122,4 @@ public class CommentController {
         commentService.deleteFileByCommentId(commentId);
         return ResultObject.makeSuccess("评论删除成功！");
     }
-
 }

@@ -11,12 +11,6 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * @Description:
- * @Author: Rocty
- * @Date: 2019-06-18 16:22
- * @Version: 1.0
- */
 public class MyDBAppender extends DBAppenderBase<ILoggingEvent> {
 
     private String insertSQL;
