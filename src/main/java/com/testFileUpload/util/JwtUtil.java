@@ -5,6 +5,9 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.testFileUpload.common.ResultObject;
+import org.apache.shiro.web.util.WebUtils;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -67,6 +70,9 @@ public class JwtUtil {
      */
     public static String getUsername(String token) {
         try {
+            if(token.isEmpty()){
+                return null;
+            }
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim("username").asString();
         } catch (JWTDecodeException e) {

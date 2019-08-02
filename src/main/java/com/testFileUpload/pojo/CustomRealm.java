@@ -43,7 +43,7 @@ public class CustomRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         System.out.println("————身份认证方法————");
         String token = (String)authenticationToken.getCredentials();
-        // 从数据库获取对应用户名密码的用户
+        // 从数据获取对应用户名密码的用户
         String username = JwtUtil.getUsername(token);
         if (username == null || !JwtUtil.verify(token, username)) {
             throw new AuthenticationException("token认证失败！");

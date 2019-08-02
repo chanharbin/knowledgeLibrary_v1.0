@@ -1,5 +1,7 @@
 package com.testFileUpload.aop;
 
+import com.testFileUpload.common.error.common.Errors;
+import com.testFileUpload.common.error.server.CommonError;
 import com.testFileUpload.util.JwtUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -48,6 +50,7 @@ public class LogAspectUtil {
         String userName = JwtUtil.getUsername(httpServletRequest.getHeader("token"));
         if (userName == null || ("".equals(userName))){
             logger.warn("用户为空");
+            throw Errors.wrap(CommonError.NULL_POINTER_EXCEPTION);
         }
         String beanName = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();

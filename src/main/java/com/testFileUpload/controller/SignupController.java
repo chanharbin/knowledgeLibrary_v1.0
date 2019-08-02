@@ -43,7 +43,6 @@ public class SignupController {
      * @param sex 性别
      * @param role 用户权限
      */
-    @LogAnnotation
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username", value = "用户名" ,dataType = "string",paramType = "query"),
             @ApiImplicitParam(name = "password",value = "密码",dataType = "string",paramType = "query"),

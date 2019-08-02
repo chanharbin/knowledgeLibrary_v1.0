@@ -43,10 +43,11 @@ public class LoginController extends BaseController {
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String logout() {
-        Subject subject = SecurityUtils.getSubject();
+       /* Subject subject = SecurityUtils.getSubject();
         //注销
         subject.logout();
-        return "成功注销";
+        return "成功注销";*/
+       return "账号已被登出";
     }
 
     /**
