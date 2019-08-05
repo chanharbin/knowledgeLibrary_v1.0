@@ -6,6 +6,7 @@ import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.common.error.common.Errors;
 import com.testFileUpload.common.error.server.CommonError;
 import com.testFileUpload.service.FileService;
+import com.testFileUpload.service.OtherService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -26,6 +29,8 @@ import java.util.List;
 public class MyFileController {
     @Autowired
     private FileService fileService;
+    @Autowired
+    private OtherService otherService;
     private String  url;
     @Autowired
     HttpServletRequest httpServletRequest;
@@ -52,9 +57,31 @@ public class MyFileController {
             throw Errors.wrap(CommonError.FILE_NOTFOUND_EXCEPTION);
         }
         try {
-            fileService.uploadFile(file,url,token,description,fileType,keyWord);
+            // 获取文件名
+            String fileName = file.getOriginalFilename();
+            fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + fileName;
+            System.out.print("（加个时间戳，尽量避免文件名称重复）保存的文件名为: "+fileName+"\n");
+            String path = "D:/fileUpload/" +fileName;
+            java.io.File dest = new java.io.File(path);
+            if (dest.exists()) {
+                throw Errors.wrap(CommonError.UNIQUE_IDENTITY_DUPLICATION);
+            }
+            //判断文件父目录是否存在
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdir();
+            }
+            //上传文件
+            file.transferTo(dest); //保存文件
+            System.out.print("保存文件路径"+path+"\n");
+            System.out.print("保存文件绝对路径"+path+"\n");
+            //url="http://你自己的域名/项目名/images/"+fileName;//正式项目
+            url="http://localhost:8080/files/"+fileName;//本地运行项目
+            long length = dest.length();
+            fileService.uploadFile(fileName,url,token,description,fileType,keyWord,length);
         } catch (IOException e) {
             return ResultObject.makeFail("上传失败");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return ResultObject.makeSuccess("文件上传成功");
     }

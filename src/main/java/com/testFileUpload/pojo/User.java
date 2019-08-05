@@ -15,7 +15,6 @@ import java.util.Date;
 public class User  {
     public User() {
     }
-
     //Id
     private int id;
     //用户Id

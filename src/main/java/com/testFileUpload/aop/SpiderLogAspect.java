@@ -22,14 +22,14 @@ import java.util.UUID;
 
 @Aspect
 @Component
-public class WebLogAcpect {
+public class SpiderLogAspect {
 //    private Logger logger = LoggerFactory.getLogger(WebLogAcpect.class);
 
     @Autowired
     private LogService logService;
     private Log rlog = new Log();
 
-    @Pointcut("@annotation(com.testFileUpload.aop.LogAnnotation)")
+    @Pointcut("@annotation(com.testFileUpload.aop.LogForSpider)")
     public void webLog(){}
 
     @Before("webLog()")
@@ -43,8 +43,8 @@ public class WebLogAcpect {
         rlog.setParams(Arrays.toString(joinPoint.getArgs()));
         Date date = new Date();
         rlog.setOperateDate(date);
-        String token = request.getHeader("token");
-        String userId = JWT.decode(token).getAudience().get(0);
+
+        String userId ="1";
         rlog.setUserId(userId);
         // 记录下请求内容
     }

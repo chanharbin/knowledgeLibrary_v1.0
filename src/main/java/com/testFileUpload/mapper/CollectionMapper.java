@@ -1,11 +1,12 @@
 package com.testFileUpload.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.testFileUpload.pojo.Collection;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.springframework.data.domain.Page;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
