@@ -12,12 +12,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
 
+@Service
 public class SpiderService {
-    public static void main(String[] args) throws Exception {
+    public static String titleType;
+    public void add() throws Exception {
         Spider spider = new Spider();
         for (int i = 0; i < 1; i++) {
 
@@ -27,6 +30,7 @@ public class SpiderService {
             //解析首页 得到首页里面的所有的id(根据id来查询每一个页面的信息) 存储到集合里面
             ArrayList<String> ids = parseIndexHtml(indexHtml);
             spider.addUrl(ids);
+            //spider.setUrls(ids);
 
             //得到了所有详情文章的id 通过文章的id来查询每一篇文章的信息 并且把这些信息保存在自己的数据库里面
             //parseXianQingYeMian(ids);
@@ -43,6 +47,7 @@ public class SpiderService {
             Document document = Jsoup.parse(indexHtml);
             //得到document对象后 就可以通过document对象来得到需要的东西
             Elements elements = document.select(".note-list .title");
+            titleType = document.select(".collection .main .main-top .title .name").get(0).text();
             //System.out.println(elements);
             for (Element element : elements) {
                 String url = element.attr("href");

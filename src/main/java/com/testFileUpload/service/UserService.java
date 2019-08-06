@@ -34,7 +34,6 @@ public class UserService {
    public void insertUser(User user){
        userMapper.insert(user);
    }
-
    @LogForSpider
    @Transactional(propagation = Propagation.REQUIRES_NEW)
    public void addPoint(String userId) throws Exception {

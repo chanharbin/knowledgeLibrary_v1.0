@@ -1,7 +1,9 @@
 package com.testFileUpload.spider;
 
+import com.testFileUpload.config.ApplicationContextProviders;
 import com.testFileUpload.service.FileService;
 
+import com.testFileUpload.service.FileServiceForSpider;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -18,15 +20,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Date;
 
 public class Task implements Runnable {
+    private FileServiceForSpider fileServiceForSpider;
     private Request request;
     private ScheduleQueue sQueue;
     public Task(Request r, ScheduleQueue sQueue){
         this.sQueue=sQueue;
         request = r;
+        this.fileServiceForSpider = ApplicationContextProviders.getBean(FileServiceForSpider.class);
     }
     @Override
     public void run(){
@@ -39,7 +42,7 @@ public class Task implements Runnable {
 
     }
 
-    private static void parseXianQingYeMian(String pid) throws IOException, ClientProtocolException {
+    private void parseXianQingYeMian(String pid) throws IOException, ClientProtocolException {
         FileService fileService = null;
         //创建发送请求
         HttpGet httpGet = new HttpGet("https://www.jianshu.com"+pid);
@@ -64,8 +67,8 @@ public class Task implements Runnable {
             String author = document.select(".note .post .article .author .name").get(0).text();
             //获取文章内容
             Elements elements = document.select(".note .post .article .show-content ol, .note .post .article .show-content p, .note .post .article .show-content ul");
-            String pathName = ownText + ".txt";
-            File file =new File("D:\\Spider\\" + pathName);
+            String pathName = "D:\\Spider\\" + SpiderService.titleType + (new Date()).getTime() + ".txt";
+            File file =new File(pathName);
             for (Element element : elements) {
                 String str = element.text();
                 FileWriter resultFile = new FileWriter(file, true);//true,则追加写入
@@ -77,7 +80,7 @@ public class Task implements Runnable {
                 resultFile.close();
                 System.out.println(str);
             }
-            //fileService.uploadFile(file,"D:\\Spider\\" + pathName,null,ownText,titleType);
+            fileServiceForSpider.uploadFile(pathName,author,"12","1","1",1);
         }
 
 

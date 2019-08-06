@@ -6,8 +6,8 @@ import java.util.concurrent.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Spider{
-    private ConcurrentHashMap<String,Object> urlMap = new ConcurrentHashMap<>();
+public class Spider {
+    private ConcurrentHashMap<String, Object> urlMap = new ConcurrentHashMap<>();
     protected List<Request> startRequest;
     private ScheduleQueue sQueue;
     private BlockingDeque queue;
@@ -15,63 +15,68 @@ public class Spider{
     private UserRejectHandler handler;
     private ThreadPoolExecutor threadPool;
     private int sleepTime;
+    private ArrayList<String> urls;
 
     private ReentrantLock newUrlLock = new ReentrantLock();
     private Condition newUrlCondition;
 
-    public Spider(){
-        sleepTime=1;
+    public Spider() {
+        sleepTime = 1;
         newUrlCondition = newUrlLock.newCondition();
         sQueue = new ScheduleQueue();
-        queue =new LinkedBlockingDeque(1000);
+        queue = new LinkedBlockingDeque(1000);
         f1 = new UserThreadFactory("download");
         handler = new UserRejectHandler();
-        threadPool = new ThreadPoolExecutor(4,8,60, TimeUnit.SECONDS
-                ,queue,f1,handler);
+        urls = new ArrayList<>();
+        threadPool = new ThreadPoolExecutor(4, 8, 60, TimeUnit.SECONDS
+                , queue, f1, handler);
     }
 
-    public Spider addUrl(ArrayList<String> ids){
-        int curUrlMapSize=urlMap.size();
-        for(String url:ids){
-            if(urlMap.containsKey(url)) {
+    public void setUrls(ArrayList<String> list) {
+        urls.addAll(list);
+    }
+
+    public Spider addUrl(ArrayList<String> ids) {
+        int curUrlMapSize = urlMap.size();
+        for (String url : ids) {
+            if (urlMap.containsKey(url)) {
                 continue;
-            }
-            else {
+            } else {
                 this.addRequest(new Request(url));
-                urlMap.put(url,1);
+                urlMap.put(url, 1);
             }
         }
-        if(urlMap.size()>curUrlMapSize){
+        if (urlMap.size() > curUrlMapSize) {
             this.signalNewUrl();
         }
         return this;
     }
 
-    private void signalNewUrl(){
-        try{
+    private void signalNewUrl() {
+        try {
             newUrlLock.lock();
             newUrlCondition.signalAll();
-        }finally {
+        } finally {
             newUrlLock.unlock();
         }
     }
 
-    private void waitNewUrl(){
+    private void waitNewUrl() {
         newUrlLock.lock();
-        try{
-            newUrlCondition.await((long)sleepTime,TimeUnit.SECONDS);
-        }catch (InterruptedException e){
+        try {
+            newUrlCondition.await((long) sleepTime, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
             newUrlLock.unlock();
         }
     }
 
-    private void addRequest(Request request){
+    private void addRequest(Request request) {
         sQueue.push(request);
     }
 
-    protected  void initCompoment(){
+    protected void initCompoment() {
 
     }
 
@@ -92,5 +97,8 @@ public class Spider{
         }
         this.threadPool.shutdown();
     }
+
+
+
 }
 
