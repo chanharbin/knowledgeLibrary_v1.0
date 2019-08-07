@@ -1,5 +1,7 @@
 package com.testFileUpload.spider;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -16,6 +18,8 @@ public class Spider {
     private ThreadPoolExecutor threadPool;
     private int sleepTime;
     private ArrayList<String> urls;
+
+
 
     private ReentrantLock newUrlLock = new ReentrantLock();
     private Condition newUrlCondition;
@@ -76,26 +80,33 @@ public class Spider {
         sQueue.push(request);
     }
 
-    protected void initCompoment() {
-
-    }
 
 
-    public void run() {
-        this.initCompoment();
-        while(!Thread.currentThread().isInterrupted()){
-            final Request request = this.sQueue.poll();
-            if(request == null){
-                this.waitNewUrl();
-            } else{
-                Runnable task = new Task(request,sQueue);
-                this.threadPool.execute(task);
-            }
-            if(this.threadPool.getCompletedTaskCount()>10000){
-                break;
-            }
+    public void run(List<String> urlList) {
+        System.out.println(urlList.size());
+        for(String curUrl:urlList){
+            Request request = new Request(curUrl);
+            Runnable task = new Task(request,sQueue);
+            this.threadPool.execute(task);
         }
+//        while(!Thread.currentThread().isInterrupted()){
+//            final Request request = this.sQueue.poll();
+//            if(request == null){
+//                this.waitNewUrl();
+//            } else{
+//                Runnable task = new Task(request,sQueue);
+//                this.threadPool.execute(task);
+//            }
+//            if(this.threadPool.getCompletedTaskCount()>10000){
+//                break;
+//            }
+//        }
         this.threadPool.shutdown();
+        try{
+            this.threadPool.awaitTermination((long)2,TimeUnit.HOURS);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
     }
 
 
