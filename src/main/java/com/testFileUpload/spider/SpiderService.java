@@ -12,6 +12,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -20,6 +21,25 @@ import java.util.ArrayList;
 @Service
 public class SpiderService {
     public static String titleType;
+    @Value("${sprider.url}")
+    public String url;
+
+    public static String getTitleType() {
+        return titleType;
+    }
+
+    public static void setTitleType(String titleType) {
+        SpiderService.titleType = titleType;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public void add() throws Exception {
         Spider spider = new Spider();
         for (int i = 0; i < 1; i++) {
@@ -58,8 +78,7 @@ public class SpiderService {
         return null;
     }
     //首页的获取
-    private static String getIndex() throws Exception {
-        String url = "https://www.jianshu.com/c/V2CqjW";
+    private String getIndex() throws Exception {
         //发起一个get请求
         HttpGet httpGet = new HttpGet(url);
         //设置请求头
