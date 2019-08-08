@@ -2,7 +2,6 @@ package com.testFileUpload.spider;
 
 import com.testFileUpload.config.ApplicationContextProviders;
 import com.testFileUpload.service.FileService;
-
 import com.testFileUpload.service.FileServiceForSpider;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -15,6 +14,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -23,37 +24,31 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Task implements Runnable {
+public class DealUrl {
+    private Logger logger = LoggerFactory.getLogger(DealUrl.class);
     private FileServiceForSpider fileServiceForSpider;
-    private Request request;
     private String titleType;
-    private String url;
 
-    public Task(String url){
-        this.url = url;
+    public DealUrl(){
         this.fileServiceForSpider = ApplicationContextProviders.getBean(FileServiceForSpider.class);
     }
 
-    @Override
-    public void run(){
-        try{
-            String indexHtml = getIndex();
-            ArrayList<String> ids = parseIndexHtml(indexHtml);
-            if(ids==null){
-                System.out.println("null:\t"+url);
-            } else {
-                for (String curUrl : ids) {
+    public void dealWithUrl(String url) throws Exception {
+        String indexHtml=getIndex(url);
+        ArrayList<String> ids = parseIndexHtml(indexHtml);
+        if(ids==null){
+            System.out.println("null:\t"+url);
+        } else {
+            for (String curUrl : ids) {
+                try {
                     parseXianQingYeMian(curUrl);
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
+                }catch (Exception e){
+                    logger.error(e.getMessage());
                 }
             }
         }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
     }
-
 
     public  String getTitleType() {
         return titleType;
@@ -63,9 +58,8 @@ public class Task implements Runnable {
         this.titleType = titleType;
     }
 
-
     //解析数据 得到url
-    private ArrayList<String> parseIndexHtml(String indexHtml) {
+    private  ArrayList<String> parseIndexHtml(String indexHtml) {
         // TODO Auto-generated method stub
         if(indexHtml != null){
             ArrayList<String> urls = new ArrayList<String>();
@@ -74,12 +68,6 @@ public class Task implements Runnable {
             //得到document对象后 就可以通过document对象来得到需要的东西
             Elements elements = document.select(".note-list .title");
             titleType = document.select(".collection .main .main-top .title .name").get(0).text();
-            //System.out.println(elements);
-            if(elements!=null){
-                System.out.println("notNULL\t"+url+"\t"+elements.size());
-            } else{
-                System.out.println("isNULL\t"+url+"\t"+elements.size());
-            }
             for (Element element : elements) {
                 String url = element.attr("href");
                 urls.add(url);
@@ -88,8 +76,9 @@ public class Task implements Runnable {
         }
         return null;
     }
+
     //首页的获取
-    private String getIndex() throws Exception {
+    private  String getIndex(String url) throws Exception {
         //发起一个get请求
         HttpGet httpGet = new HttpGet(url);
         //设置请求头
@@ -98,7 +87,7 @@ public class Task implements Runnable {
         return getHtml(httpGet);
     }
     //执行发送请求的方法
-    private  String getHtml(HttpGet httpGet) throws Exception {
+    private   String getHtml(HttpGet httpGet) throws Exception {
         // TODO Auto-generated method stub
         String html = null;
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -107,10 +96,11 @@ public class Task implements Runnable {
         if(execute.getStatusLine().getStatusCode() == 200){
             HttpEntity entity = execute.getEntity();
             html = EntityUtils.toString(entity);
+        }else{
+            System.out.println("not 200! "+execute.getStatusLine().getStatusCode());
         }
         return html;
     }
-
 
 
 
@@ -121,7 +111,7 @@ public class Task implements Runnable {
         //创建发送请求
         HttpGet httpGet = new HttpGet("https://www.jianshu.com"+pid);
         //HttpGet httpGet = new HttpGet("https://www.huxiu.com/article/311419.html");
-        System.out.println("https://www.jianshu.com"+pid);
+        //System.out.println("https://www.jianshu.com"+pid);
         //消息头
         httpGet.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36");
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -152,14 +142,11 @@ public class Task implements Runnable {
                 myFile.println("\n");
                 myFile.close();
                 resultFile.close();
-                //System.out.println(str);
             }
-            fileServiceForSpider.uploadFile(pathName,author,"12","1","1",1);
+            fileServiceForSpider.uploadFile(pathName,author,"12","1","1",file.length());
         }
 
 
     }
-
-
 
 }

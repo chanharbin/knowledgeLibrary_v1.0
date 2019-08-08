@@ -1,3 +1,4 @@
+
 package com.testFileUpload.service;
 
 import com.testFileUpload.App;
@@ -23,7 +24,7 @@ public class SpiderTest {
 
     @Test
     public void add() throws Exception {
-        spiderService.add();
+        spiderService.start();
     }
 
     private void a(){
@@ -31,3 +32,4 @@ public class SpiderTest {
 
     }
 }
+
