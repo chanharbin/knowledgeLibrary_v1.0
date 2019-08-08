@@ -26,12 +26,11 @@ import java.util.Date;
 public class Task implements Runnable {
     private FileServiceForSpider fileServiceForSpider;
     private Request request;
-    //private ScheduleQueue sQueue;
     private String titleType;
     private String url;
 
-    public Task(Request r, ScheduleQueue sQueue){
-        this.url = r.getUrl();
+    public Task(String url){
+        this.url = url;
         this.fileServiceForSpider = ApplicationContextProviders.getBean(FileServiceForSpider.class);
     }
 
@@ -40,9 +39,8 @@ public class Task implements Runnable {
         try{
             String indexHtml = getIndex();
             ArrayList<String> ids = parseIndexHtml(indexHtml);
-            System.out.println(ids);
             if(ids==null){
-                System.out.println(url);
+                System.out.println("null:\t"+url);
             } else {
                 for (String curUrl : ids) {
                     parseXianQingYeMian(curUrl);
@@ -57,11 +55,11 @@ public class Task implements Runnable {
     }
 
 
-    private   String getTitleType() {
+    public  String getTitleType() {
         return titleType;
     }
 
-    private void setTitleType(String titleType) {
+    public void setTitleType(String titleType) {
         this.titleType = titleType;
     }
 
@@ -77,6 +75,11 @@ public class Task implements Runnable {
             Elements elements = document.select(".note-list .title");
             titleType = document.select(".collection .main .main-top .title .name").get(0).text();
             //System.out.println(elements);
+            if(elements!=null){
+                System.out.println("notNULL\t"+url+"\t"+elements.size());
+            } else{
+                System.out.println("isNULL\t"+url+"\t"+elements.size());
+            }
             for (Element element : elements) {
                 String url = element.attr("href");
                 urls.add(url);
@@ -149,7 +152,7 @@ public class Task implements Runnable {
                 myFile.println("\n");
                 myFile.close();
                 resultFile.close();
-                System.out.println(str);
+                //System.out.println(str);
             }
             fileServiceForSpider.uploadFile(pathName,author,"12","1","1",1);
         }

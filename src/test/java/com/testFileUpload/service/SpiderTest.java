@@ -2,6 +2,7 @@ package com.testFileUpload.service;
 
 import com.testFileUpload.App;
 import com.testFileUpload.spider.SpiderService;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +24,10 @@ public class SpiderTest {
     @Test
     public void add() throws Exception {
         spiderService.add();
+    }
+
+    private void a(){
+        JSONObject j = new JSONObject();
+
     }
 }

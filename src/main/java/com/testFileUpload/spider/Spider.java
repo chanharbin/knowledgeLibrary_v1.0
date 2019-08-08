@@ -32,7 +32,7 @@ public class Spider {
         f1 = new UserThreadFactory("download");
         handler = new UserRejectHandler();
         urls = new ArrayList<>();
-        threadPool = new ThreadPoolExecutor(4, 8, 60, TimeUnit.SECONDS
+        threadPool = new ThreadPoolExecutor(2, 3, 60, TimeUnit.SECONDS
                 , queue, f1, handler);
     }
 
@@ -85,8 +85,7 @@ public class Spider {
     public void run(List<String> urlList) {
         System.out.println(urlList.size());
         for(String curUrl:urlList){
-            Request request = new Request(curUrl);
-            Runnable task = new Task(request,sQueue);
+            Task task = new Task(curUrl);
             this.threadPool.execute(task);
         }
 //        while(!Thread.currentThread().isInterrupted()){

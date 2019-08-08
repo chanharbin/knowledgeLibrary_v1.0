@@ -25,6 +25,7 @@ public class SpiderService {
     private List<String> urlList;
 
     public  void add() throws Exception {
+
         Spider spider = new Spider();
 
         //爬取首页的信息
