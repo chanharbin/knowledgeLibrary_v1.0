@@ -1,10 +1,10 @@
 package com.testFileUpload.controller;
 
-import com.auth0.jwt.JWT;
 import com.testFileUpload.aop.LogAnnotation;
 import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.common.error.common.Errors;
 import com.testFileUpload.common.error.server.CommonError;
+import com.testFileUpload.pojo.File;
 import com.testFileUpload.service.FileService;
 import com.testFileUpload.service.OtherService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -24,7 +24,10 @@ import java.util.Date;
 import java.util.List;
 
 
-
+/**
+ * 收藏Controller，controller层实现对收藏的操作
+ * @author HUANGZHONGGUI3
+ */
 @RestController
 public class MyFileController {
     @Autowired
@@ -146,5 +149,17 @@ public class MyFileController {
     @RequestMapping(value = "/dispalyFileByVisits",method = RequestMethod.GET)
     public List<com.testFileUpload.pojo.File> dispalyFileByVisits() throws Exception {
         return fileService.displayByVisits();
+    }
+    @LogAnnotation
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "Authorization token",
+                    required = true, dataType = "string", paramType = "header"),
+            @ApiImplicitParam(name = "key",value = "关键字",dataType = "String",paramType = "query"),
+    })
+    @ApiOperation(value = "模糊查询file",httpMethod = "GET",response = ResponseBody.class)
+    @RequiresRoles(logical = Logical.OR, value = {"user", "admin"})
+    @RequestMapping(value = "/selectFileByTitleType",method = RequestMethod.GET)
+    public List<File> selectFileByTitleType(@RequestParam("key") String key){
+        return fileService.selectFileByTitleType(key);
     }
 }

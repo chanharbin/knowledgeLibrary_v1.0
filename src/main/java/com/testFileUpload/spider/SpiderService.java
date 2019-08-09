@@ -1,33 +1,23 @@
 package com.testFileUpload.spider;
 
-import com.testFileUpload.service.FileService;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import com.testFileUpload.pojo.SpiderUrl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class SpiderService {
-    @Value("#{'${sprider.url-List}'.split(',')}")
-   private List<String> urlList;
+//    @Value("#{'${sprider.url-List}'.split(',')}")
+//   private List<String> urlList;
 
+    private List<SpiderUrl> list;
     public void start() throws Exception {
+        SpiderUrl spiderUrl = new SpiderUrl();
+        list = spiderUrl.getSpiderUrl();
         Spider spider = new Spider();
-        System.out.println(urlList.size());
-        spider.runSpider(urlList);
+        System.out.println(list.size());
+        spider.runSpider(list);
     }
 
 }

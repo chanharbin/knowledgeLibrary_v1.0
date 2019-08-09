@@ -1,6 +1,7 @@
 package com.testFileUpload.spider;
 
 import com.testFileUpload.config.ApplicationContextProviders;
+import com.testFileUpload.pojo.SpiderUrl;
 import com.testFileUpload.service.FileService;
 import com.testFileUpload.service.FileServiceForSpider;
 import org.apache.http.HttpEntity;
@@ -33,15 +34,16 @@ public class DealUrl {
         this.fileServiceForSpider = ApplicationContextProviders.getBean(FileServiceForSpider.class);
     }
 
-    public void dealWithUrl(String url) throws Exception {
-        String indexHtml=getIndex(url);
-        ArrayList<String> ids = parseIndexHtml(indexHtml);
+    public void dealWithUrl(SpiderUrl spiderUrl) throws Exception {
+        String indexHtml=getIndex(spiderUrl.getUrl());
+        System.out.println(indexHtml);
+        ArrayList<String> ids = parseIndexHtml(spiderUrl,indexHtml);
         if(ids==null){
-            System.out.println("null:\t"+url);
+            System.out.println("null:\t"+spiderUrl.getUrl());
         } else {
             for (String curUrl : ids) {
                 try {
-                    parseXianQingYeMian(curUrl);
+                    parseXianQingYeMian(curUrl,spiderUrl.getOwnText(),spiderUrl.getAuthor(),spiderUrl.getText());
                     Thread.sleep(1000);
                 }catch (Exception e){
                     logger.error(e.getMessage());
@@ -59,15 +61,17 @@ public class DealUrl {
     }
 
     //解析数据 得到url
-    private  ArrayList<String> parseIndexHtml(String indexHtml) {
+    private  ArrayList<String> parseIndexHtml(SpiderUrl spiderUrl,String indexHtml) {
         // TODO Auto-generated method stub
         if(indexHtml != null){
             ArrayList<String> urls = new ArrayList<String>();
             //解析得到的页面的信息 将其变成文档对象
             Document document = Jsoup.parse(indexHtml);
             //得到document对象后 就可以通过document对象来得到需要的东西
-            Elements elements = document.select(".note-list .title");
-            titleType = document.select(".collection .main .main-top .title .name").get(0).text();
+            //System.out.println(spiderUrl);
+            //System.out.println(spiderUrl.getTitleList());
+            Elements elements = document.select(spiderUrl.getTitleList());
+            titleType = document.select(spiderUrl.getTitleType()).get(0).text();
             for (Element element : elements) {
                 String url = element.attr("href");
                 urls.add(url);
@@ -102,16 +106,16 @@ public class DealUrl {
         return html;
     }
 
-
-
-
-
-    private void parseXianQingYeMian(String pid) throws IOException, ClientProtocolException {
+    private void parseXianQingYeMian(String pid,String ownText1,String author1,String text) throws IOException {
         FileService fileService = null;
         //创建发送请求
-        HttpGet httpGet = new HttpGet("https://www.jianshu.com"+pid);
-        //HttpGet httpGet = new HttpGet("https://www.huxiu.com/article/311419.html");
-        //System.out.println("https://www.jianshu.com"+pid);
+        String url = pid;
+        HttpGet httpGet = null;
+        if (url.length() >= 20){
+            httpGet = new HttpGet(url);
+        }else{
+            httpGet = new HttpGet("https://www.jianshu.com"+ url);
+        }
         //消息头
         httpGet.addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36");
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -124,15 +128,16 @@ public class DealUrl {
             //将详细页面的信息 转换为文档对象
             Document document = Jsoup.parse(html);
             //获取文章的标题信息
-            String ownText = document.select(".note .post .article .title").get(0).ownText();
-            //获取文章主题
-            //String titleType = document.select(".collection .main .main-top .title .name").get(0).text();
+            String ownText = document.select(ownText1).get(0).ownText();
             //获取作者
-            String author = document.select(".note .post .article .author .name").get(0).text();
+            String author = document.select(author1).get(0).text();
             //获取文章内容
-            Elements elements = document.select(".note .post .article .show-content ol, .note .post .article .show-content p, .note .post .article .show-content ul");
+            Elements elements = document.select(text);
             String pathName = "D:\\Spider\\" + titleType + (new Date()).getTime() + ".txt";
             File file =new File(pathName);
+            if (!file.exists()){
+                file.createNewFile();
+            }
             for (Element element : elements) {
                 String str = element.text();
                 FileWriter resultFile = new FileWriter(file, true);//true,则追加写入
@@ -142,11 +147,10 @@ public class DealUrl {
                 myFile.println("\n");
                 myFile.close();
                 resultFile.close();
+                System.out.println(str);
             }
-            fileServiceForSpider.uploadFile(pathName,author,"12","1","1",file.length());
+            long length = file.length();
+            //fileServiceForSpider.uploadFile(pathName,author,"12","1","1",length);
         }
-
-
     }
-
 }

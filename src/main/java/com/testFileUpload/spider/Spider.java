@@ -1,7 +1,6 @@
 package com.testFileUpload.spider;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.transaction.annotation.Transactional;
+import com.testFileUpload.pojo.SpiderUrl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,12 +49,12 @@ public class Spider {
         }
     }
 
-    public void runSpider(List<String> urlList) {
-        for(String curUrl:urlList){
+    public void runSpider(List<SpiderUrl> list) {
+        for(SpiderUrl spiderUrl:list){
             this.threadPool.execute(new Runnable() {
                 @Override
                 public void run() {
-                    taskDealUrl(curUrl);
+                    taskDealUrl(spiderUrl);
                 }
             });
         }
@@ -66,10 +65,10 @@ public class Spider {
             e.printStackTrace();
         }
     }
-    private void taskDealUrl(String url){
+    private void taskDealUrl(SpiderUrl spiderUrl){
         DealUrl dealUrl = new DealUrl();
         try {
-            dealUrl.dealWithUrl(url);
+            dealUrl.dealWithUrl(spiderUrl);
         }catch (Exception e){
             e.printStackTrace();
         }
