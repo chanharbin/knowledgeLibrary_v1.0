@@ -1,11 +1,13 @@
 package com.testFileUpload.pojo;
 
 
+import java.io.Serializable;
+
 /**
  * 用户收藏信息
  * @author HUANGZHONGGUI3
  */
-public class Collection {
+public class Collection implements Serializable {
     private int id;
     private String collectionId;
     private String userId;

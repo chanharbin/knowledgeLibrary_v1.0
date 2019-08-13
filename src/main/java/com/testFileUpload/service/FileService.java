@@ -59,6 +59,12 @@ public class FileService {
         List<File> files = fileMapper.selectPage(new Page<File>(pageNum,pageSize),wrapper.like("key_word",keyWord).eq("state","1"));
         return files;
     }
+
+    /**
+     * 删除文件Id为 fileId 的文件
+     * @param fileId
+     * @return
+     */
     public int deleteFileByFileId(String fileId){
         Integer delete = fileMapper.deleteFileByFileId(fileId);
         return delete;
@@ -70,5 +76,15 @@ public class FileService {
 
     public List<File> displayByVisits(){
         return fileMapper.displayFileByVisits();
+    }
+
+    /**
+     * 根据key做模糊查询，查询key_word中包含key的file
+     * @param key
+     * @return
+     */
+    public List<File> selectFileByTitleType(String key){
+        List<File> list = fileMapper.selectFileByTitleType(key);
+        return list;
     }
 }

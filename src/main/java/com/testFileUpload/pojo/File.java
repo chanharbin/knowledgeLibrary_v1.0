@@ -2,6 +2,7 @@ package com.testFileUpload.pojo;
 
 import com.baomidou.mybatisplus.annotations.TableName;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Date;
  * @author HUANGZHONGGUI3
  */
 @TableName(value = "file")
-public class File {
+public class File implements Serializable {
     //编号
     private int id;
     //文件id

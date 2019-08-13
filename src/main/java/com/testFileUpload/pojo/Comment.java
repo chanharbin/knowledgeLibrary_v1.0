@@ -2,6 +2,7 @@ package com.testFileUpload.pojo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Date;
  * @author HUANGZHONGGUI3
  */
 @Data
-public class Comment {
+public class Comment implements Serializable {
 
     private int id;
     private String commentId;

@@ -1,5 +1,6 @@
 package com.testFileUpload;
 
+import com.testFileUpload.pojo.SpiderUrl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,11 +12,15 @@ import java.util.List;
 @SpringBootTest(classes = App.class)
 @RunWith(SpringRunner.class)
 public class UrlsTest {
-    @Value("#{'${sprider.url-List}'.split(',')}")
-     private List<String> urllist;
+//    @Value("#{'${sprider.url-List}'.split(',')}")
+//     private List<String> urllist;
 
     @Test
     public void test(){
-        System.out.println(urllist);
+        SpiderUrl spiderUrl = new SpiderUrl();
+        System.out.println(spiderUrl.getSpiderUrl());
+        //System.out.println(urllist);
     }
+
+
 }
