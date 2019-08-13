@@ -39,7 +39,6 @@ public class CommentController {
             @ApiImplicitParam(name = "content",value = "评论",dataType = "String",paramType = "query")
     })
     @ApiOperation(value = "提交评论",httpMethod = "POST",response = ResponseBody.class)
-    @RequiresRoles("user")
     @RequestMapping(value = "/commentSubmit", method = RequestMethod.POST)
     @LogAnnotation
     public ResultObject commentSubmit(@RequestParam("file_id") String fileId, @RequestParam("content") String content){
@@ -71,7 +70,6 @@ public class CommentController {
             @ApiImplicitParam(name = "pageSize",value = "页面数量",dataType = "Integer",paramType = "query")
     })
     @ApiOperation(value = "查看文件评论",httpMethod = "GET",response = ResponseBody.class)
-    @RequiresRoles("user")
     @RequestMapping(value = "/comment_display_file", method=RequestMethod.GET)
     @LogAnnotation
     public ResultObject<List<Comment>> displayCommentFile(@RequestParam("file_id") String fileId,@RequestParam("pageNum")int pageNum,
@@ -93,7 +91,6 @@ public class CommentController {
             @ApiImplicitParam(name = "pageSize",value = "页面数量",dataType = "Integer",paramType = "query")
     })
     @ApiOperation(value = "查看用户评论",httpMethod = "GET",response = ResponseBody.class)
-    @RequiresRoles("user")
     @RequestMapping(value = "/comment_display_user", method=RequestMethod.GET)
     @LogAnnotation
     public ResultObject<List<Comment>> displayCommentUser(@RequestParam("pageNum")int pageNum,
@@ -115,7 +112,6 @@ public class CommentController {
             @ApiImplicitParam(name = "comment_id",value = "评论id",dataType = "String",paramType = "query")
     })
     @ApiOperation(value = "删除用户评论",httpMethod = "GET",response = ResponseBody.class)
-    @RequiresRoles("user")
     @RequestMapping(value = "/comment_del", method=RequestMethod.GET)
     @LogAnnotation
     public  ResultObject delComment(@RequestParam("comment_id") int commentId){

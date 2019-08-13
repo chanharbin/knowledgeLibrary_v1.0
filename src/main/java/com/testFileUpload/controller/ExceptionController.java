@@ -18,7 +18,7 @@ public class ExceptionController {
 
     // 捕捉shiro的异常
     @ExceptionHandler(ShiroException.class)
-    @LogAnnotation
+//    @LogAnnotation
     public ResultObject<ExceptionController> handle401() {
         return ResultObject.makeFail("您无权限访问");
     }

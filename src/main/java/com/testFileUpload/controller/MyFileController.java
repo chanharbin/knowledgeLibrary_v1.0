@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,8 +46,8 @@ public class MyFileController {
     })
     @ApiOperation(value = "上传文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/uploadFile",produces="application/json;charset=UTF-8",method = RequestMethod.POST)
-    @RequiresRoles("user")
-    @LogAnnotation
+//    @RequiresRoles("user")
+//    @LogAnnotation
     public ResultObject<com.testFileUpload.pojo.File> uploadFile(@RequestParam("fileName") MultipartFile file,@RequestParam("description") String description, @RequestParam("keyWord") String keyWord,
                              @RequestParam("fileType")String fileType) {
 
@@ -126,12 +127,10 @@ public class MyFileController {
             @ApiImplicitParam(name = "pageSize",value = "页面数量",dataType = "Integer",paramType = "query")
     })
     @LogAnnotation
-    @RequiresRoles(logical = Logical.OR, value = {"user", "admin"})
     @RequestMapping(value = "/getAllFile",method = RequestMethod.GET)
     public List<com.testFileUpload.pojo.File> getAllFile(@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize){
         return fileService.getAllFile(pageNum,pageSize);
     }
-
     /**
      * 文档访问量前十展示
      * @return

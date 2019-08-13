@@ -1,7 +1,11 @@
 package com.testFileUpload.pojo;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.testFileUpload.common.error.common.ErrorCode;
+import com.testFileUpload.common.error.common.Errors;
+import com.testFileUpload.common.error.server.CommonError;
 import com.testFileUpload.mapper.UserMapper;
+import com.testFileUpload.service.PermissionService;
 import com.testFileUpload.util.JWTToken;
 import com.testFileUpload.util.JwtUtil;
 import org.apache.shiro.SecurityUtils;
@@ -20,10 +24,16 @@ import java.util.Set;
 @Component
 public class CustomRealm extends AuthorizingRealm {
     private UserMapper userMapper;
+    private PermissionService permissionService;
 
     @Autowired
     private void setUserMapper(UserMapper userMapper) {
         this.userMapper = userMapper;
+    }
+
+    @Autowired
+    private void setPermissionService(PermissionService permissionService){
+        this.permissionService = permissionService;
     }
     /**
      * 必须重写此方法，不然会报错
@@ -76,10 +86,16 @@ public class CustomRealm extends AuthorizingRealm {
         List<User> users = userMapper.selectList(wrapper);
         String role = users.get(0).getRole();
         Set<String> roleset = new HashSet<>();
+        Set<String> permissionUrls = new HashSet<>();
+        permissionUrls = permissionService.listPermissions(username);
         //需要将 role 封装到 Set 作为 info.setRoles() 的参数
         roleset.add(role);
         //设置该用户拥有的角色
         info.setRoles(roleset);
+        if(permissionUrls == null){
+            throw Errors.wrap(CommonError.PARAM_IS_NULL,"暂无权限");
+        }
+        info.setStringPermissions(permissionUrls);
         return info;
     }
 }

@@ -44,7 +44,6 @@ public class CollectionController {
     @LogAnnotation
     public ResultObject collectionFile(@RequestParam("collectionType") String collectionType,
                                        @RequestParam("collectionFileId") String collectionFileId){
-
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
         String userId = JWT.decode(token).getAudience().get(0);
         Collection collection = new Collection();
@@ -82,8 +81,7 @@ public class CollectionController {
             @ApiImplicitParam(name = "token", value = "Authorization token",
                     required = true, dataType = "string", paramType = "header"),
             @ApiImplicitParam(name = "pageNum",value = "页数",dataType = "Integer",paramType = "query"),
-            @ApiImplicitParam(name = "pageSize",value = "页面数量",dataType = "Integer",paramType = "query"),
-            @ApiImplicitParam(name = "userId",value = "用户Id",dataType = "String",paramType = "query")
+            @ApiImplicitParam(name = "pageSize",value = "页面数量",dataType = "Integer",paramType = "query")
     })
     @ApiOperation(value = "检索用户的收藏文件",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value="/selectAllCollectionFile",produces="application/json;charset=UTF-8")

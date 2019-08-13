@@ -26,10 +26,8 @@ import java.util.UUID;
 public class FileService {
     @Autowired
     private FileMapper fileMapper;
-
-    @LogAnnotation
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public int uploadFile(String fileName,String url,String token,String description,String fileType,String keyWord,long length) {
+    public int uploadFile(String fileName,String url,String token,String description,String fileType,String keyWord,long length) throws Exception {
         String userId = JWT.decode(token).getAudience().get(0);
         String userName = JWT.decode(token).getAudience().get(1);
         Date date = new Date();

@@ -78,7 +78,7 @@ public class SignupController {
             }
         }
         else{
-            ResultObject.makeFail("用户已注册");
+            return ResultObject.makeFail("用户已注册");
         }
         return ResultObject.makeSuccess("注册成功");
     }
