@@ -20,4 +20,7 @@ public interface FileMapper extends BaseMapper<File> {
     //根据用户输入的关键字key,对文件的keyWord进行模糊查询，找出所有符合条件的文件
     @Select("select * from file where key_word like %+#{key}+%")
     List<File> selectFileByTitleType(@Param("key") String key);
+
+    @Select("select * from file where file_id = #{file_id}")
+    File selectByFileId(@Param("file_id")String fileId);
 }

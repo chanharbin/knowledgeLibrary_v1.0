@@ -1,5 +1,6 @@
 package com.testFileUpload.controller;
 
+import com.auth0.jwt.JWT;
 import com.testFileUpload.aop.LogAnnotation;
 import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.common.error.common.Errors;
@@ -7,6 +8,8 @@ import com.testFileUpload.common.error.server.CommonError;
 import com.testFileUpload.pojo.File;
 import com.testFileUpload.service.FileService;
 import com.testFileUpload.service.OtherService;
+import com.testFileUpload.service.RecommendService;
+import com.testFileUpload.util.JwtUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -38,6 +41,8 @@ public class MyFileController {
     private String  url;
     @Autowired
     HttpServletRequest httpServletRequest;
+    @Autowired
+    private RecommendService recommendService;
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Authorization token",
@@ -160,5 +165,17 @@ public class MyFileController {
     @RequestMapping(value = "/selectFileByTitleType",method = RequestMethod.GET)
     public List<File> selectFileByTitleType(@RequestParam("key") String key){
         return fileService.selectFileByTitleType(key);
+    }
+
+    @LogAnnotation
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token",value = "Authorization token")
+    })
+    @RequestMapping(value = "/recommend",method = RequestMethod.GET)
+    public ResultObject recommend(){
+        String token = httpServletRequest.getHeader("token");
+        String userName = JWT.decode(token).getAudience().get(1);
+        File recommend = recommendService.recommend(userName);
+        return ResultObject.makeSuccess(recommend,"与你相似的用户曾看过这篇文档");
     }
 }

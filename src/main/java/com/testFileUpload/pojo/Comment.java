@@ -19,6 +19,8 @@ public class Comment implements Serializable {
     private String commentContext;
     private Date commentTime;
     private String state;
+    private String commentUserId;
+    private int point;
 
     public Comment(String commentUsername, String commentContext) {
         this.commentUsername = commentUsername;
