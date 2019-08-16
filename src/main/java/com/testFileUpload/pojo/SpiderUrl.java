@@ -1,17 +1,20 @@
 package com.testFileUpload.pojo;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ *  配置文件 spider.properties 实体类
+ * @author HUANGZHONGGUI3
+ */
 @Data
 @Component
-
-public class SpiderUrl {
+public class SpiderUrl implements Serializable {
     private String url;
     private String author;
     private String text;
@@ -19,6 +22,10 @@ public class SpiderUrl {
     private String ownText;
     private String titleList;
 
+    /**
+     *  从配置文件中读取数据，初始化SpiderUrl对象
+     * @return
+     */
     public List<SpiderUrl> getSpiderUrl(){
         List<SpiderUrl> list = new ArrayList<>();
         ResourceBundle resourceBundle = ResourceBundle.getBundle("spider");

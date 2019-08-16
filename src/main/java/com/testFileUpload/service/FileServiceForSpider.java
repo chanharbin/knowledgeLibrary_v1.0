@@ -1,6 +1,5 @@
 package com.testFileUpload.service;
 
-import com.auth0.jwt.JWT;
 import com.testFileUpload.aop.LogForSpider;
 import com.testFileUpload.mapper.FileMapper;
 import com.testFileUpload.pojo.File;
@@ -9,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
@@ -21,8 +18,20 @@ import java.util.UUID;
 public class FileServiceForSpider {
     @Autowired
     private FileMapper fileMapper;
+
+    /**
+     * 将爬虫爬取到的文件存入数据库中
+     * @param filePathAbsolute
+     * @param author
+     * @param description
+     * @param fileType
+     * @param keyWord
+     * @param length
+     * @return
+     * @throws IOException
+     */
     @LogForSpider
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor = Exception.class)
     public int uploadFile(String filePathAbsolute,String author, String description, String fileType, String keyWord, long length) throws IOException {
         MultipartFile multipartFile = FileUtil.transferFile(filePathAbsolute);
         String fileName = multipartFile.getOriginalFilename();
@@ -47,8 +56,6 @@ public class FileServiceForSpider {
         //TODO
         file1.setUpdateTime(date);
         int result= fileMapper.insert(file1);
-        System.out.print("插入结果"+result+"\n");
-        System.out.print("保存的完整url===="+url+"\n");
         return result;
     }
 }

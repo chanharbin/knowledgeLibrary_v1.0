@@ -23,6 +23,7 @@ import java.util.Set;
 
 @Component
 public class CustomRealm extends AuthorizingRealm {
+
     private UserMapper userMapper;
     private PermissionService permissionService;
 

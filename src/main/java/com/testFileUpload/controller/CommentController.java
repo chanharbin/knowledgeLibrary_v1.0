@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 @RestController
@@ -35,7 +36,7 @@ public class CommentController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Authorization token",
                     required = true, dataType = "string", paramType = "header"),
-            @ApiImplicitParam(name = "file_id",value = "文件id",dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name ="file_id",value = "文件id",dataType = "String",paramType = "query"),
             @ApiImplicitParam(name = "content",value = "评论",dataType = "String",paramType = "query")
     })
     @ApiOperation(value = "提交评论",httpMethod = "POST",response = ResponseBody.class)
@@ -45,7 +46,6 @@ public class CommentController {
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
         String commentUsername = JWT.decode(token).getAudience().get(1);
         Comment comment = new Comment(commentUsername,content);
-        comment.setCommentFileId(String.valueOf(UUID.randomUUID()));
         comment.setCommentTime(new Date());
         comment.setCommentFileId(fileId);
         comment.setState("1");

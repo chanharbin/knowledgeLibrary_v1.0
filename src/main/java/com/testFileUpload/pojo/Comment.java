@@ -27,6 +27,8 @@ public class Comment implements Serializable {
         this.commentContext = commentContext;
     }
 
+    public Comment(){}
+
     @Override
     public String toString() {
         return "Comment{" +

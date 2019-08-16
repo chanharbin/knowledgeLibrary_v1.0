@@ -9,14 +9,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.*;
 
-//
-//@SpringBootTest(classes = App.class)
-//@RunWith(SpringRunner.class)
-//public class SpiderServiceTest {
-//    @Autowired
-//    private SpiderService spiderService;
-//    @Test
-//    public void add() throws Exception {
-//        spiderService.add();
-//    }
-//}
+
+@SpringBootTest(classes = App.class)
+@RunWith(SpringRunner.class)
+public class SpiderServiceTest {
+    @Autowired
+    private SpiderService spiderService;
+    @Test
+    public void add() throws Exception {
+        spiderService.start();
+    }
+}
