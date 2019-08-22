@@ -21,7 +21,6 @@ public class SpiderTest {
     @Autowired
     private SpiderService spiderService;
 
-
     @Test
     public void add() throws Exception {
         spiderService.start();
@@ -29,7 +28,5 @@ public class SpiderTest {
 
     private void a(){
         JSONObject j = new JSONObject();
-
     }
 }
-

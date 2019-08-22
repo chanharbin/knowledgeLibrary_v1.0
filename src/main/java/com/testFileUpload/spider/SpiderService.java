@@ -12,6 +12,11 @@ public class SpiderService {
 //   private List<String> urlList;
 
     private List<SpiderUrl> list;
+
+    /**
+     * 爬虫程序入口函数
+     * @throws Exception
+     */
     public void start() throws Exception {
         SpiderUrl spiderUrl = new SpiderUrl();
         list = spiderUrl.getSpiderUrl();

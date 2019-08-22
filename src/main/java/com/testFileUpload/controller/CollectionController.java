@@ -95,7 +95,8 @@ public class CollectionController {
     @ResponseBody
     @LogAnnotation
     public ResultObject<List<Collection>> selectAllCollection(@RequestParam("pageNum")int pageNum,@RequestParam("pageSize")int pageSize){
-        String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
+        // 从 http 请求头中取出 token
+        String token = httpServletRequest.getHeader("token");
         String userId = JWT.decode(token).getAudience().get(0);
         List<Collection> list = collectionService.selectCollectionByUserIdToPage(pageNum,pageSize,userId);
         return  ResultObject.makeSuccess(list,"用户收藏信息搜索成功");

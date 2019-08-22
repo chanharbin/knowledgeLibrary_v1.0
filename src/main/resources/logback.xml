@@ -187,6 +187,6 @@
 
         <!-- 生产环境将请stdout,testfile去掉 -->
         <appender-ref ref="STDOUT" />
-        <appender-ref ref="DB"/>
+<!--        <appender-ref ref="DB"/>-->
     </root>
 </configuration>

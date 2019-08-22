@@ -1,5 +1,6 @@
 package com.testFileUpload.controller;
 
+import com.auth0.jwt.JWT;
 import com.testFileUpload.aop.LogAnnotation;
 import com.testFileUpload.common.ResultObject;
 import com.testFileUpload.common.error.common.Errors;
@@ -7,6 +8,8 @@ import com.testFileUpload.common.error.server.CommonError;
 import com.testFileUpload.pojo.File;
 import com.testFileUpload.service.FileService;
 import com.testFileUpload.service.OtherService;
+import com.testFileUpload.service.RecommendService;
+import com.testFileUpload.util.JwtUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -24,7 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * 收藏Controller，controller层实现对收藏的操作
  * @author HUANGZHONGGUI3
@@ -38,6 +40,8 @@ public class MyFileController {
     private String  url;
     @Autowired
     HttpServletRequest httpServletRequest;
+    @Autowired
+    private RecommendService recommendService;
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Authorization token",
@@ -53,8 +57,8 @@ public class MyFileController {
 //    @LogAnnotation
     public ResultObject<com.testFileUpload.pojo.File> uploadFile(@RequestParam("fileName") MultipartFile file,@RequestParam("description") String description, @RequestParam("keyWord") String keyWord,
                              @RequestParam("fileType")String fileType) {
-
-        String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
+        // 从 http 请求头中取出 token
+        String token = httpServletRequest.getHeader("token");
         System.out.print("上传文件===" + "\n");
         //判断文件是否为空
         if (file.isEmpty()) {
@@ -75,11 +79,13 @@ public class MyFileController {
                 dest.getParentFile().mkdir();
             }
             //上传文件
-            file.transferTo(dest); //保存文件
+            file.transferTo(dest);
+            //保存文件
             System.out.print("保存文件路径"+path+"\n");
             System.out.print("保存文件绝对路径"+path+"\n");
             //url="http://你自己的域名/项目名/images/"+fileName;//正式项目
-            url="http://localhost:8080/files/"+fileName;//本地运行项目
+            url="http://localhost:8080/files/"+fileName;
+            //本地运行项目
             long length = dest.length();
             fileService.uploadFile(fileName,url,token,description,fileType,keyWord,length);
         } catch (IOException e) {
@@ -101,7 +107,8 @@ public class MyFileController {
     @RequestMapping(value="/deleteFile",produces="application/json;charset=UTF-8")
     @ResponseBody
     public ResultObject<com.testFileUpload.pojo.File> deleteFile(@RequestParam("file_id") String fileId){
-        String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
+        // 从 http 请求头中取出 token
+        String token = httpServletRequest.getHeader("token");
         com.testFileUpload.pojo.File file = fileService.selectFileByFileId(fileId);
         fileService.deleteFileByFileId(fileId);
         return new ResultObject<com.testFileUpload.pojo.File>("删除成功");
@@ -160,5 +167,17 @@ public class MyFileController {
     @RequestMapping(value = "/selectFileByTitleType",method = RequestMethod.GET)
     public List<File> selectFileByTitleType(@RequestParam("key") String key){
         return fileService.selectFileByTitleType(key);
+    }
+
+    @LogAnnotation
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token",value = "Authorization token")
+    })
+    @RequestMapping(value = "/recommend",method = RequestMethod.GET)
+    public ResultObject recommend(){
+        String token = httpServletRequest.getHeader("token");
+        String userName = JWT.decode(token).getAudience().get(1);
+        File recommend = recommendService.recommend(userName);
+        return ResultObject.makeSuccess(recommend,"与你相似的用户曾看过这篇文档");
     }
 }

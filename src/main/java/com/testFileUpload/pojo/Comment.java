@@ -29,6 +29,8 @@ public class Comment {
         this.commentContext = commentContext;
     }
 
+    public Comment(){}
+
     @Override
     public String toString() {
         return "Comment{" +

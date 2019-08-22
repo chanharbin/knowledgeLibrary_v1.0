@@ -28,18 +28,25 @@ import java.util.Date;
 public class DealUrl {
     private Logger logger = LoggerFactory.getLogger(DealUrl.class);
     private FileServiceForSpider fileServiceForSpider;
+    /**
+     * 爬取的文章类型
+     */
     private String titleType;
 
     public DealUrl(){
         this.fileServiceForSpider = ApplicationContextProviders.getBean(FileServiceForSpider.class);
     }
 
+    /**
+     * 爬取 spiderUrl 页面，并获取上面的文章 url 列表
+     * @param spiderUrl
+     * @throws Exception
+     */
     public void dealWithUrl(SpiderUrl spiderUrl) throws Exception {
         String indexHtml=getIndex(spiderUrl.getUrl());
-        System.out.println(indexHtml);
         ArrayList<String> ids = parseIndexHtml(spiderUrl,indexHtml);
         if(ids==null){
-            System.out.println("null:\t"+spiderUrl.getUrl());
+            throw new NullPointerException();
         } else {
             for (String curUrl : ids) {
                 try {
@@ -60,7 +67,12 @@ public class DealUrl {
         this.titleType = titleType;
     }
 
-    //解析数据 得到url
+    /**
+     * 解析数据 得到url
+     * @param spiderUrl
+     * @param indexHtml
+     * @return
+     */
     private  ArrayList<String> parseIndexHtml(SpiderUrl spiderUrl,String indexHtml) {
         // TODO Auto-generated method stub
         if(indexHtml != null){
@@ -68,8 +80,6 @@ public class DealUrl {
             //解析得到的页面的信息 将其变成文档对象
             Document document = Jsoup.parse(indexHtml);
             //得到document对象后 就可以通过document对象来得到需要的东西
-            //System.out.println(spiderUrl);
-            //System.out.println(spiderUrl.getTitleList());
             Elements elements = document.select(spiderUrl.getTitleList());
             titleType = document.select(spiderUrl.getTitleType()).get(0).text();
             for (Element element : elements) {
@@ -90,7 +100,13 @@ public class DealUrl {
         //返回页面的信息
         return getHtml(httpGet);
     }
-    //执行发送请求的方法
+
+    /**
+     * 执行发送请求的方法
+     * @param httpGet
+     * @return
+     * @throws Exception
+     */
     private   String getHtml(HttpGet httpGet) throws Exception {
         // TODO Auto-generated method stub
         String html = null;
@@ -106,6 +122,14 @@ public class DealUrl {
         return html;
     }
 
+    /**
+     * 获取每一个页面的具体文章内容
+     * @param pid
+     * @param ownText1
+     * @param author1
+     * @param text
+     * @throws IOException
+     */
     private void parseXianQingYeMian(String pid,String ownText1,String author1,String text) throws IOException {
         FileService fileService = null;
         //创建发送请求
@@ -122,7 +146,8 @@ public class DealUrl {
         //发送请求
         CloseableHttpResponse execute = httpClient.execute(httpGet);
         //判断这个详细页面是否可以加载成功
-        if(execute.getStatusLine().getStatusCode() == 200){//200表示加载到了详情的页面的信息
+        //200表示加载到了详情的页面的信息
+        if(execute.getStatusLine().getStatusCode() == 200){
             HttpEntity entity = execute.getEntity();
             String html = EntityUtils.toString(entity);
             //将详细页面的信息 转换为文档对象
@@ -140,7 +165,8 @@ public class DealUrl {
             }
             for (Element element : elements) {
                 String str = element.text();
-                FileWriter resultFile = new FileWriter(file, true);//true,则追加写入
+                //true,则追加写入
+                FileWriter resultFile = new FileWriter(file, true);
                 PrintWriter myFile = new PrintWriter(resultFile);
                 //写入
                 myFile.println(str);

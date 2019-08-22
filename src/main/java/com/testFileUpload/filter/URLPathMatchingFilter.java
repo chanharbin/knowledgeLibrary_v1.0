@@ -3,20 +3,15 @@ package com.testFileUpload.filter;
 import com.testFileUpload.common.ApplicationContextProvider;
 import com.testFileUpload.service.PermissionService;
 
-import com.testFileUpload.service.impl.PermissionServiceImpl;
-import com.testFileUpload.util.SpringContextUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.PathMatchingFilter;
 
 import org.apache.shiro.web.util.WebUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import java.util.Set;
 
 
 public class URLPathMatchingFilter extends PathMatchingFilter {
@@ -49,7 +44,6 @@ public class URLPathMatchingFilter extends PathMatchingFilter {
             }
             else {
                 UnauthorizedException ex = new UnauthorizedException("当前用户没有访问路径 " + requestURI + " 的权限");
-
                 throw ex;
             }
         }
