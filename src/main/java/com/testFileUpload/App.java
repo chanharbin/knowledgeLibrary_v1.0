@@ -6,11 +6,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 /**
  * Hello world!
  *
  */
+@CrossOrigin
 @EnableTransactionManagement   //开启事务支持
 @SpringBootApplication(scanBasePackages = {"com.testFileUpload"})
 @MapperScan("com.testFileUpload.mapper")

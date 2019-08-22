@@ -61,7 +61,7 @@ public class WebLogAcpect {
     @AfterThrowing(pointcut="webLog()",throwing="e")
     public void doAfterThrowing(Exception e){
         rlog.setLogType("Exception");
-        rlog.setDescription(e.getMessage());
+        rlog.setDescription("FAIL");
         rlog.setResultParams("String");
         logService.uploadLog(rlog);
     }

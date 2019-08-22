@@ -36,16 +36,20 @@ public class CommentController {
             @ApiImplicitParam(name = "token", value = "Authorization token",
                     required = true, dataType = "string", paramType = "header"),
             @ApiImplicitParam(name = "file_id",value = "文件id",dataType = "String",paramType = "query"),
-            @ApiImplicitParam(name = "content",value = "评论",dataType = "String",paramType = "query")
+            @ApiImplicitParam(name = "content",value = "评论",dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name = "point",value = "评分",dataType = "int",paramType = "query")
     })
     @ApiOperation(value = "提交评论",httpMethod = "POST",response = ResponseBody.class)
     @RequestMapping(value = "/commentSubmit", method = RequestMethod.POST)
     @LogAnnotation
-    public ResultObject commentSubmit(@RequestParam("file_id") String fileId, @RequestParam("content") String content){
+    public ResultObject commentSubmit(@RequestParam("file_id") String fileId, @RequestParam("content") String content,
+                                      @RequestParam("point") int point){
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
+        String commentUserId=JWT.decode(token).getAudience().get(0);
         String commentUsername = JWT.decode(token).getAudience().get(1);
         Comment comment = new Comment(commentUsername,content);
-        comment.setCommentFileId(String.valueOf(UUID.randomUUID()));
+        comment.setCommentUserId(commentUserId);
+        comment.setPoint(point);
         comment.setCommentTime(new Date());
         comment.setCommentFileId(fileId);
         comment.setState("1");

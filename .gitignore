@@ -3,3 +3,4 @@
 KnowledgeLibrary.iml
 target/
 FileUploadDemo.iml
+src/main/resources/application.properties

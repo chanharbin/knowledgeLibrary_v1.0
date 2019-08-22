@@ -17,6 +17,6 @@ public class SpiderServiceTest {
     private SpiderService spiderService;
     @Test
     public void add() throws Exception {
-        spiderService.add();
+        spiderService.start();
     }
 }

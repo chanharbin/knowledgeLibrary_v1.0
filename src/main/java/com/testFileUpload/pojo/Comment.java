@@ -1,8 +1,9 @@
 package com.testFileUpload.pojo;
 
+import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
+import org.hibernate.annotations.Table;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,7 +11,8 @@ import java.util.Date;
  * @author HUANGZHONGGUI3
  */
 @Data
-public class Comment implements Serializable {
+@TableName(value = "comment")
+public class Comment {
 
     private int id;
     private String commentId;
@@ -19,6 +21,8 @@ public class Comment implements Serializable {
     private String commentContext;
     private Date commentTime;
     private String state;
+    private String commentUserId;
+    private int point;
 
     public Comment(String commentUsername, String commentContext) {
         this.commentUsername = commentUsername;
@@ -35,6 +39,8 @@ public class Comment implements Serializable {
                 ", commentContext='" + commentContext + '\'' +
                 ", commentTime=" + commentTime +
                 ", state='" + state + '\'' +
+                ", commentUserId='"+commentUserId + '\'' +
+                ", point='"+point + '\'' +
                 '}';
     }
 }
