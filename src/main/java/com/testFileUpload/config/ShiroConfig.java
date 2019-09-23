@@ -33,6 +33,7 @@ public class ShiroConfig {
         factoryBean.setUnauthorizedUrl("/unauthorized/无权限");
         Map<String, String> filterRuleMap = new HashMap<>();
         filterRuleMap.put("/swagger-ui.html","anon");
+        filterRuleMap.put("/websocket","anon");
         filterRuleMap.put("/swagger-resources/**", "anon");
         filterRuleMap.put("/v2/api-docs/**", "anon");
         filterRuleMap.put("/webjars/springfox-swagger-ui/**", "anon");
